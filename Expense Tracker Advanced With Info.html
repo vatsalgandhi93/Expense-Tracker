@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monthly Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-page: #f5f4f0;
+            --bg-card: #ffffff;
+            --bg-surface: #f0efe9;
+            --bg-surface2: #e8e7e1;
+            --text-primary: #1a1a18;
+            --text-secondary: #6b6a65;
+            --border: rgba(0, 0, 0, 0.09);
+            --border-med: rgba(0, 0, 0, 0.17);
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 14px;
+            --font: 'Georgia', 'Times New Roman', serif;
+            --font-sans: system-ui, -apple-system, sans-serif;
+            --color-bank: #2563EB;
+            --color-cc: #9333EA;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-page: #18181a;
+                --bg-card: #222225;
+                --bg-surface: #2a2a2e;
+                --bg-surface2: #313136;
+                --text-primary: #f0efe9;
+                --text-secondary: #8a8a84;
+                --border: rgba(255, 255, 255, 0.08);
+                --border-med: rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-family: var(--font);
+            font-size: 28px;
+            font-weight: normal;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ── Metrics ── */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 1.25rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: .9rem 1.1rem;
+        }
+
+        .metric-card.accent-bank {
+            border-left: 3px solid var(--color-bank);
+        }
+
+        .metric-card.accent-cc {
+            border-left: 3px solid var(--color-cc);
+        }
+
+        .metric-card.accent-savings {
+            border-left: 3px solid #1D9E75;
+        }
+
+        .metric-card.accent-savings.negative {
+            border-left-color: #e24b4a;
+        }
+
+        .metric-card .label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            margin-bottom: 5px;
+        }
+
+        .metric-card .value {
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: -.5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-card .value.savings-pos {
+            color: #1D9E75;
+        }
+
+        .metric-card .value.savings-neg {
+            color: #e24b4a;
+        }
+
+        .income-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
+        .income-input-wrap span {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .income-input {
+            flex: 1;
+            min-width: 0;
+            font-size: 19px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            padding: 0;
+            width: 100%;
+        }
+
+        .income-input::placeholder {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* ── Panels ── */
+        .panel {
+            background: var(--bg-card);
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .panel-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            border-radius: 4px;
+            transition: color .15s;
+        }
+
+        .panel-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        .panel-body.collapsed {
+            display: none;
+        }
+
+        /* ── Accounts section ── */
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .account-col h3 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .account-col h3 .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .account-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+            min-height: 4px;
+        }
+
+        .account-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            padding: 8px 10px;
+            font-size: 13px;
+        }
+
+        .account-chip .chip-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .account-chip .chip-info {
+            flex: 1;
+        }
+
+        .account-chip .chip-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .account-chip .chip-sub {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .account-chip .chip-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 2px 3px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            transition: color .15s;
+            flex-shrink: 0;
+        }
+
+        .account-chip .chip-del:hover {
+            color: #e24b4a;
+        }
+
+        .mini-form {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .mini-form .mf-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mini-form .mf-field label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .mini-form input,
+        .mini-form select {
+            height: 34px;
+            padding: 0 10px;
+            font-size: 13px;
+            border: 0.5px solid var(--border-med);
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: border-color .15s;
+        }
+
+        .mini-form input:focus,
+        .mini-form select:focus {
+            border-color: #378ADD;
+            box-shadow: 0 0 0 3px rgba(55, 138, 221, .12);
+        }
+
+        .mini-form input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .mini-form select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 26px;
+        }
+
+        .mini-btn {
+            height: 34px;
+            padding: 0 14px;
+            font-size: 13px;
+            font-weight: 500;
+            background: var(--text-primary);
+            color: var(--bg-page);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            transition: opacity .15s, transform .1s;
+            flex-shrink: 0;
+        }
+
+        .mini-btn:hover {
+            opacity: .82;
+        }
+
+        .mini-btn:active {
+            transform: scale(.97);
+        }
+
+        .mini-err {
+            font-size: 11px;
+            color: #e24b4a;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .no-accounts-msg {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* ── Expense form ── */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 110px 148px 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            height: 38px;
+            padding: 0 12px;
+            border: 0.5px solid var(--border-med);
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            outline: none;
+            transition: border-color .15s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #378ADD;
+            box-shadow: 0 0 0 3px rgba(55, 138, 221, .12);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+
+        button.add-btn {
+            height: 38px;
+            padding: 0 20px;
+            background: var(--text-primary);
+            color: var(--bg-page);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: opacity .15s, transform .1s;
+        }
+
+        button.add-btn:hover {
+            opacity: .82;
+        }
+
+        button.add-btn:active {
+            transform: scale(.97);
+        }
+
+        .err-msg {
+            font-size: 12px;
+            color: #e24b4a;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .account-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            display: none;
+        }
+
+        .account-hint a {
+            color: var(--color-bank);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* ── Charts grid ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .chart-wrap {
+            position: relative;
+            width: 100%;
+            height: 210px;
+        }
+
+        .bar-wrap {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 50px 0;
+        }
+
+        /* ── Expense log ── */
+        .exp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 310px;
+            overflow-y: auto;
+        }
+
+        .exp-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .exp-list::-webkit-scrollbar-thumb {
+            background: var(--border-med);
+            border-radius: 4px;
+        }
+
+        .exp-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+        }
+
+        .exp-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .exp-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-primary);
+        }
+
+        .exp-cat {
+            font-size: 11px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .exp-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .badge-bank {
+            background: rgba(37, 99, 235, .12);
+            color: var(--color-bank);
+        }
+
+        .badge-cc {
+            background: rgba(147, 51, 234, .12);
+            color: var(--color-cc);
+        }
+
+        .exp-amount {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            flex-shrink: 0;
+        }
+
+        .del-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: color .15s;
+            flex-shrink: 0;
+        }
+
+        .del-btn:hover {
+            color: #e24b4a;
+        }
+
+        /* ── Legend ── */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* ── Sankey tooltip ── */
+        .sk-tip {
+            position: fixed;
+            background: var(--bg-card);
+            border: 0.5px solid var(--border-med);
+            border-radius: var(--radius-md);
+            padding: 7px 11px;
+            font-size: 12px;
+            color: var(--text-primary);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .15s;
+            z-index: 200;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .14);
+        }
+
+        @media (max-width: 680px) {
+            .metrics {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-row .field:first-child {
+                grid-column: span 2;
+            }
+
+            .form-row .field:nth-child(4) {
+                grid-column: span 2;
+            }
+
+            .form-row .field:last-child {
+                grid-column: span 2;
+            }
+
+            .form-row .field:last-child button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* ── Logo ── */
+        .site-logo {
+            height: 36px;
+            width: auto;
+            display: block;
+            filter: none;
+            /* black logo on light bg */
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .site-logo {
+                filter: invert(1);
+            }
+
+            /* flip to white on dark bg */
+        }
+
+        /* ── Footer ── */
+        .site-footer {
+            margin-top: 2.5rem;
+            padding: 1.25rem 0 2rem;
+            border-top: 0.5px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand img {
+            height: 28px;
+            width: auto;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .footer-brand img {
+                filter: invert(1);
+            }
+        }
+
+        .footer-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .footer-tagline {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color .15s;
+        }
+
+        .footer-link:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-link i {
+            font-size: 15px;
+        }
+
+        .footer-link.linkedin:hover {
+            color: #0A66C2;
+        }
+
+        /* ── Info Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 0.5px solid var(--border-med);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 680px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+            margin: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: var(--bg-surface);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 18px;
+            transition: background .15s, color .15s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-surface2);
+            color: var(--text-primary);
+        }
+
+        .modal-box h2 {
+            font-family: var(--font);
+            font-size: 22px;
+            font-weight: normal;
+            margin: 0 0 6px;
+        }
+
+        .modal-box .modal-sub {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0 0 1.75rem;
+        }
+
+        .modal-section {
+            margin-bottom: 1.75rem;
+        }
+
+        .modal-section h3 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-secondary);
+            margin: 0 0 10px;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--text-primary);
+            color: var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .step-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .step-text span {
+            color: var(--text-secondary);
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .chart-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            padding: 12px;
+        }
+
+        .chart-card .cc-icon {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .chart-card .cc-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .chart-card .cc-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .sankey-explainer {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+
+        .sankey-flow {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .sf-node {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .sf-arrow {
+            font-size: 18px;
+            color: var(--text-secondary);
+            padding: 0 4px;
+        }
+
+        .sf-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .info-btn {
+            background: var(--bg-surface);
+            border: 0.5px solid var(--border-med);
+            border-radius: var(--radius-md);
+            padding: 0 14px;
+            height: 34px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+
+        .info-btn:hover {
+            background: var(--bg-surface2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header
+            style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:2rem;">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <img class="site-logo"
+                    src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAPoA+gDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AIyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//Z"
+                    alt="Company logo" />
+                <div>
+                    <h1 style="margin:0;">Monthly Expenses</h1>
+                    <p style="margin:4px 0 0;">Manage your accounts, log expenses, and trace every dollar from source to
+                        category.</p>
+                </div>
+            </div>
+            <button class="info-btn" id="info-btn" style="flex-shrink:0; margin-top:4px;">
+                <i class="ti ti-info-circle" aria-hidden="true"></i> How to use
+            </button>
+        </header>
+
+        <!-- ── Info Modal ── -->
+        <div class="modal-overlay" id="info-modal" role="dialog" aria-modal="true" aria-label="How to use">
+            <div class="modal-box">
+                <button class="modal-close" id="modal-close" aria-label="Close"><i class="ti ti-x"></i></button>
+                <h2>How to use this dashboard</h2>
+                <p class="modal-sub">Track every dollar from your bank account to each individual expense — with live
+                    charts that update as you type.</p>
+
+                <div class="modal-section">
+                    <h3><i class="ti ti-list-numbers" style="margin-right:5px;" aria-hidden="true"></i>Getting started
+                    </h3>
+                    <div class="step-list">
+                        <div class="step-item">
+                            <div class="step-num">1</div>
+                            <p class="step-text"><strong>Add a bank account</strong> — open the Accounts panel, enter a
+                                name (e.g. Chase Checking) and optionally your last 4 digits. <span>This is your funding
+                                    source for all expenses.</span></p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">2</div>
+                            <p class="step-text"><strong>Add credit cards</strong> (optional) — enter the card name,
+                                last 4 digits, and select which bank account pays it off. <span>The Sankey will show the
+                                    bank funding the card, which funds your purchases.</span></p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">3</div>
+                            <p class="step-text"><strong>Log an expense</strong> — fill in a description, amount,
+                                category, and select which account or card you paid with. Hit Add or press Enter.
+                                <span>All charts update instantly.</span>
+                            </p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">4</div>
+                            <p class="step-text"><strong>Delete any entry</strong> by clicking the trash icon in the
+                                expense log. <span>All charts recalculate automatically.</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3><i class="ti ti-chart-dots" style="margin-right:5px;" aria-hidden="true"></i>The charts</h3>
+                    <div class="chart-grid">
+                        <div class="chart-card">
+                            <div class="cc-icon"><i class="ti ti-chart-donut" aria-hidden="true"></i></div>
+                            <div class="cc-title">Donut — category breakdown</div>
+                            <div class="cc-desc">Shows what percentage of total spending went to each category. Hover a
+                                slice for the exact dollar amount.</div>
+                        </div>
+                        <div class="chart-card">
+                            <div class="cc-icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+                            <div class="cc-title">Bar — category totals</div>
+                            <div class="cc-desc">Horizontal bars ranked by spend, making it easy to spot your biggest
+                                categories at a glance.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-section" style="margin-bottom:0;">
+                    <h3><i class="ti ti-hierarchy" style="margin-right:5px;" aria-hidden="true"></i>The Sankey flow
+                        diagram</h3>
+                    <div class="sankey-explainer">
+                        <div class="sankey-flow">
+                            <span class="sf-node" style="background:rgba(37,99,235,.12); color:#2563EB;">Bank
+                                account</span>
+                            <span class="sf-arrow">→</span>
+                            <span class="sf-node" style="background:rgba(147,51,234,.12); color:#9333EA;">Credit
+                                card</span>
+                            <span class="sf-arrow">→</span>
+                            <span class="sf-node"
+                                style="background:rgba(55,138,221,.12); color:#378ADD;">Category</span>
+                            <span class="sf-arrow">→</span>
+                            <span class="sf-node"
+                                style="background:var(--bg-surface2); color:var(--text-secondary);">Each expense</span>
+                        </div>
+                        <p class="sf-desc">Every ribbon in the diagram represents money flowing between nodes. The
+                            <strong>wider the ribbon</strong>, the more money moved that way. Bank-direct expenses skip
+                            the credit card column entirely, showing a long ribbon straight to their category. Hover any
+                            node or ribbon for the exact dollar amount.
+                        </p>
+                        <p class="sf-desc" style="margin-top:6px;">If you only use one bank account and no credit cards,
+                            you'll see a clean 3-column chart: bank → category → individual expenses. Add a credit card
+                            and a 4th column appears automatically.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Metrics ── -->
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="label">Total spent</div>
+                <div class="value" id="total-display">$0.00</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Net income</div>
+                <div class="income-input-wrap">
+                    <span>$</span>
+                    <input class="income-input" id="income-input" type="number" min="0" step="100" placeholder="0"
+                        aria-label="Net monthly income" />
+                </div>
+            </div>
+            <div class="metric-card accent-savings" id="savings-card">
+                <div class="label">Savings</div>
+                <div class="value" id="savings-display">—</div>
+                <div id="savings-pct" style="font-size:11px; color:var(--text-secondary); margin-top:3px;"></div>
+            </div>
+            <div class="metric-card accent-bank">
+                <div class="label">Via bank account</div>
+                <div class="value" id="bank-display">$0.00</div>
+            </div>
+            <div class="metric-card accent-cc">
+                <div class="label">Via credit card</div>
+                <div class="value" id="cc-display">$0.00</div>
+            </div>
+        </div>
+
+        <!-- ── Accounts ── -->
+        <div class="panel" id="accounts-panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="ti ti-wallet" style="margin-right:5px;"></i>Accounts</span>
+                <button class="panel-toggle" id="accounts-toggle" title="Collapse"><i
+                        class="ti ti-chevron-up"></i></button>
+            </div>
+            <div class="panel-body" id="accounts-body">
+                <div class="accounts-grid">
+
+                    <!-- Bank Accounts -->
+                    <div class="account-col">
+                        <h3><span class="dot" style="background:var(--color-bank);"></span>Bank Accounts</h3>
+                        <div class="account-list" id="bank-list"></div>
+                        <div class="mini-form" id="bank-add-form">
+                            <div class="mf-field">
+                                <label>Account name</label>
+                                <input type="text" id="bank-name" placeholder="e.g. Chase Checking"
+                                    style="width:170px;" />
+                            </div>
+                            <div class="mf-field">
+                                <label>Last 4 digits</label>
+                                <input type="text" id="bank-last4" placeholder="0000" maxlength="4"
+                                    style="width:80px;" />
+                            </div>
+                            <button class="mini-btn" id="bank-add-btn"><i class="ti ti-plus"></i> Add</button>
+                        </div>
+                        <p class="mini-err" id="bank-err">Please enter an account name.</p>
+                    </div>
+
+                    <!-- Credit Cards -->
+                    <div class="account-col">
+                        <h3><span class="dot" style="background:var(--color-cc);"></span>Credit Cards</h3>
+                        <div class="account-list" id="cc-list"></div>
+                        <div class="mini-form" id="cc-add-form">
+                            <div class="mf-field">
+                                <label>Card name</label>
+                                <input type="text" id="cc-name" placeholder="e.g. Chase Sapphire"
+                                    style="width:150px;" />
+                            </div>
+                            <div class="mf-field">
+                                <label>Last 4 digits</label>
+                                <input type="text" id="cc-last4" placeholder="0000" maxlength="4" style="width:80px;" />
+                            </div>
+                            <div class="mf-field">
+                                <label>Paid from</label>
+                                <select id="cc-bank" style="width:150px;">
+                                    <option value="">— select bank —</option>
+                                </select>
+                            </div>
+                            <button class="mini-btn" id="cc-add-btn"><i class="ti ti-plus"></i> Add</button>
+                        </div>
+                        <p class="mini-err" id="cc-err">Please fill all fields.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Add Expense ── -->
+        <div class="panel">
+            <div class="panel-header" style="margin-bottom:14px;">
+                <span class="panel-title"><i class="ti ti-receipt" style="margin-right:5px;"></i>Add expense</span>
+            </div>
+            <div class="form-row">
+                <div class="field">
+                    <label for="exp-name">Description</label>
+                    <input type="text" id="exp-name" placeholder="e.g. Rent, groceries…" />
+                </div>
+                <div class="field">
+                    <label for="exp-amount">Amount ($)</label>
+                    <input type="number" id="exp-amount" placeholder="0.00" min="0" step="0.01" />
+                </div>
+                <div class="field">
+                    <label for="exp-cat">Category</label>
+                    <select id="exp-cat">
+                        <option value="Housing & Utilities">Housing &amp; Utilities</option>
+                        <option value="Food & Dining">Food &amp; Dining</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Childcare & Kids' Expenses">Childcare &amp; Kids' Expenses</option>
+                        <option value="Personal Care, Fitness & Discretionary">Personal Care, Fitness &amp;
+                            Discretionary</option>
+                        <option value="Healthcare & Insurance">Healthcare &amp; Insurance</option>
+                        <option value="Travel & Entertainment">Travel &amp; Entertainment</option>
+                        <option value="Savings & Investments">Savings &amp; Investments</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="exp-account">Paid with</label>
+                    <select id="exp-account">
+                        <option value="">— select account —</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label style="visibility:hidden;">Add</label>
+                    <button class="add-btn" id="add-btn"><i class="ti ti-plus"></i> Add</button>
+                </div>
+            </div>
+            <p class="err-msg" id="err-msg">Please fill in all fields correctly.</p>
+            <p class="account-hint" id="account-hint">No accounts yet. <a id="accounts-link">Add a bank account or
+                    credit card</a> above first.</p>
+        </div>
+
+        <!-- ── Donut + Log ── -->
+        <div class="two-col">
+            <div class="panel" style="margin-bottom:0;">
+                <div class="panel-header"><span class="panel-title">Breakdown by category</span></div>
+                <div class="legend" id="legend"></div>
+                <div id="empty-donut" class="empty-msg">Add an expense to see the chart.</div>
+                <div class="chart-wrap" id="donut-wrap" style="display:none;">
+                    <canvas id="donut-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-bottom:0;">
+                <div class="panel-header"><span class="panel-title">Expense log</span></div>
+                <div class="exp-list" id="exp-list">
+                    <p class="empty-msg" id="empty-list">Nothing logged yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Bar chart ── -->
+        <div class="panel" style="margin-top:1.25rem;">
+            <div class="panel-header"><span class="panel-title">Spending by category</span></div>
+            <div id="empty-bar" class="empty-msg">Add an expense to see the summary.</div>
+            <div class="bar-wrap" id="bar-wrap" style="display:none;">
+                <canvas id="bar-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- ── Sankey ── -->
+        <div class="panel" style="margin-top:1.25rem;">
+            <div class="panel-header"><span class="panel-title">Money flow — account → payment method → category</span>
+            </div>
+            <div id="empty-sankey" class="empty-msg">Add accounts and expenses to see the flow diagram.</div>
+            <div id="sankey-wrap" style="display:none; width:100%;">
+                <svg id="sankey-svg" style="width:100%; display:block;"></svg>
+            </div>
+        </div>
+
+        <!-- ── Footer ── -->
+        <footer class="site-footer">
+            <div class="footer-brand">
+                <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAPoA+gDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AIyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//Z"
+                    alt="Logo" />
+                <div>
+                    <div class="footer-name">Vatsal Gandhi</div>
+                    <div class="footer-tagline">Personal Finance Dashboard</div>
+                </div>
+            </div>
+            <div class="footer-links">
+                <a class="footer-link" href="mailto:vatsalgandhi93@gmail.com" title="Email">
+                    <i class="ti ti-mail" aria-hidden="true"></i>
+                    vatsalgandhi93@gmail.com
+                </a>
+                <a class="footer-link linkedin" href="https://www.linkedin.com/in/vatsalgandhi93" target="_blank"
+                    rel="noopener" title="LinkedIn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path
+                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                    linkedin.com/in/vatsalgandhi93
+                </a>
+            </div>
+        </footer>
+
+    </div><!-- /container -->
+    <div class="sk-tip" id="sk-tip"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script>
+        /* ════════════════════════════════════════════
+           State
+        ═══════════════════════════════════════════ */
+        const CAT_COLORS = {
+            'Housing & Utilities': '#378ADD',
+            'Food & Dining': '#1D9E75',
+            'Transportation': '#BA7517',
+            'Childcare & Kids\' Expenses': '#FFA500',
+            'Personal Care, Fitness & Discretionary': '#D4537E',
+            'Healthcare & Insurance': '#D85A30',
+            'Travel & Entertainment': '#7F77DD',
+            'Savings & Investments': '#2ECC71',
+            'Miscellaneous': '#888780'
+        };
+        const COLOR_BANK = '#2563EB';
+        const COLOR_CC = '#9333EA';
+
+        let bankAccounts = [];   // { id, name, last4 }
+        let creditCards = [];   // { id, name, last4, bankId }
+        let expenses = [];   // { id, name, amount, cat, accountId, accountType }
+        let uidCounter = 1;
+        const uid = () => uidCounter++;
+
+        let donutChart = null;
+        let barChart = null;
+
+        const $ = id => document.getElementById(id);
+
+        /* ════════════════════════════════════════════
+           Account helpers
+        ═══════════════════════════════════════════ */
+        function accountLabel(acc, type) {
+            const last4 = acc.last4 ? ` ••${acc.last4}` : '';
+            return acc.name + last4;
+        }
+
+        function findAccount(id) {
+            return bankAccounts.find(a => a.id === id) || creditCards.find(c => c.id === id) || null;
+        }
+
+        function accountType(id) {
+            if (bankAccounts.find(a => a.id === id)) return 'bank';
+            if (creditCards.find(c => c.id === id)) return 'cc';
+            return null;
+        }
+
+        /* ════════════════════════════════════════════
+           Render: account chips
+        ═══════════════════════════════════════════ */
+        function renderAccountChips() {
+            // Bank chips
+            const bl = $('bank-list');
+            bl.innerHTML = '';
+            if (bankAccounts.length === 0) {
+                bl.innerHTML = '<p class="no-accounts-msg">No bank accounts yet.</p>';
+            } else {
+                bankAccounts.forEach(acc => {
+                    const chip = document.createElement('div');
+                    chip.className = 'account-chip';
+                    chip.innerHTML = `
+        <span class="chip-icon" style="color:var(--color-bank);"><i class="ti ti-building-bank"></i></span>
+        <div class="chip-info">
+          <div class="chip-name">${acc.name}</div>
+          <div class="chip-sub">${acc.last4 ? 'Account ending ••' + acc.last4 : 'No account number added'}</div>
+        </div>
+        <button class="chip-del" data-id="${acc.id}" data-type="bank" title="Remove"><i class="ti ti-trash"></i></button>
+      `;
+                    bl.appendChild(chip);
+                });
+            }
+
+            // CC chips
+            const cl = $('cc-list');
+            cl.innerHTML = '';
+            if (creditCards.length === 0) {
+                cl.innerHTML = '<p class="no-accounts-msg">No credit cards yet.</p>';
+            } else {
+                creditCards.forEach(cc => {
+                    const bank = bankAccounts.find(b => b.id === cc.bankId);
+                    const bankLabel = bank ? bank.name : 'Unknown bank';
+                    const chip = document.createElement('div');
+                    chip.className = 'account-chip';
+                    chip.innerHTML = `
+        <span class="chip-icon" style="color:var(--color-cc);"><i class="ti ti-credit-card"></i></span>
+        <div class="chip-info">
+          <div class="chip-name">${cc.name}</div>
+          <div class="chip-sub">${cc.last4 ? 'Card ending ••' + cc.last4 + ' · ' : ''}Paid via ${bankLabel}</div>
+        </div>
+        <button class="chip-del" data-id="${cc.id}" data-type="cc" title="Remove"><i class="ti ti-trash"></i></button>
+      `;
+                    cl.appendChild(chip);
+                });
+            }
+
+            // Wire delete buttons
+            document.querySelectorAll('.chip-del').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    if (btn.dataset.type === 'bank') {
+                        bankAccounts = bankAccounts.filter(a => a.id !== id);
+                        creditCards = creditCards.filter(c => c.bankId !== id);   // remove linked CCs
+                        expenses = expenses.filter(e => {
+                            const t = accountType(e.accountId);
+                            // remove expenses tied to deleted account or its CCs
+                            return findAccount(e.accountId) !== null;
+                        });
+                    } else {
+                        creditCards = creditCards.filter(c => c.id !== id);
+                        expenses = expenses.filter(e => e.accountId !== id);
+                    }
+                    renderAccountChips();
+                    refreshCCBankSelect();
+                    refreshExpenseAccountSelect();
+                    update();
+                });
+            });
+
+            // Refresh CC bank dropdown
+            refreshCCBankSelect();
+            refreshExpenseAccountSelect();
+        }
+
+        function refreshCCBankSelect() {
+            const sel = $('cc-bank');
+            sel.innerHTML = '<option value="">— select bank —</option>';
+            bankAccounts.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.id;
+                opt.textContent = accountLabel(b);
+                sel.appendChild(opt);
+            });
+        }
+
+        function refreshExpenseAccountSelect() {
+            const sel = $('exp-account');
+            const prev = sel.value;
+            sel.innerHTML = '';
+
+            const hasAny = bankAccounts.length > 0 || creditCards.length > 0;
+            if (!hasAny) {
+                sel.innerHTML = '<option value="">— add an account first —</option>';
+                $('account-hint').style.display = 'block';
+                return;
+            }
+            $('account-hint').style.display = 'none';
+
+            if (bankAccounts.length > 0) {
+                const og = document.createElement('optgroup');
+                og.label = 'Bank Accounts';
+                bankAccounts.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.id;
+                    opt.textContent = accountLabel(b);
+                    og.appendChild(opt);
+                });
+                sel.appendChild(og);
+            }
+
+            if (creditCards.length > 0) {
+                const og = document.createElement('optgroup');
+                og.label = 'Credit Cards';
+                creditCards.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = accountLabel(c);
+                    og.appendChild(opt);
+                });
+                sel.appendChild(og);
+            }
+
+            // Restore previous selection if still valid
+            if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+        }
+
+        /* ════════════════════════════════════════════
+           Add account handlers
+        ═══════════════════════════════════════════ */
+        $('bank-add-btn').addEventListener('click', () => {
+            const name = $('bank-name').value.trim();
+            const last4 = $('bank-last4').value.trim().replace(/\D/g, '').slice(-4);
+            const err = $('bank-err');
+            if (!name) { err.style.display = 'block'; return; }
+            err.style.display = 'none';
+            bankAccounts.push({ id: uid(), name, last4 });
+            $('bank-name').value = '';
+            $('bank-last4').value = '';
+            renderAccountChips();
+        });
+
+        $('cc-add-btn').addEventListener('click', () => {
+            const name = $('cc-name').value.trim();
+            const last4 = $('cc-last4').value.trim().replace(/\D/g, '').slice(-4);
+            const bankId = parseInt($('cc-bank').value);
+            const err = $('cc-err');
+            if (!name || !bankId) { err.style.display = 'block'; return; }
+            err.style.display = 'none';
+            creditCards.push({ id: uid(), name, last4, bankId });
+            $('cc-name').value = '';
+            $('cc-last4').value = '';
+            renderAccountChips();
+        });
+
+        [$('bank-name'), $('bank-last4')].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') $('bank-add-btn').click(); }));
+        [$('cc-name'), $('cc-last4')].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') $('cc-add-btn').click(); }));
+
+        /* ════════════════════════════════════════════
+           Panel collapse
+        ═══════════════════════════════════════════ */
+        $('accounts-toggle').addEventListener('click', () => {
+            const body = $('accounts-body');
+            const icon = $('accounts-toggle').querySelector('i');
+            body.classList.toggle('collapsed');
+            icon.className = body.classList.contains('collapsed') ? 'ti ti-chevron-down' : 'ti ti-chevron-up';
+        });
+
+        /* ════════════════════════════════════════════
+           Charts
+        ═══════════════════════════════════════════ */
+        function getCatTotals() {
+            const t = {};
+            expenses.forEach(e => { t[e.cat] = (t[e.cat] || 0) + e.amount; });
+            return t;
+        }
+
+        function buildDonut(ct) {
+            const labels = Object.keys(ct), data = Object.values(ct);
+            const colors = labels.map(l => CAT_COLORS[l]);
+            const total = data.reduce((a, b) => a + b, 0);
+            const bgCard = getComputedStyle(document.documentElement).getPropertyValue('--bg-card').trim() || '#fff';
+            if (!donutChart) {
+                donutChart = new Chart($('donut-chart'), {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 3, borderColor: bgCard, hoverOffset: 8 }] },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutout: '60%',
+                        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.toFixed(2)} (${((ctx.parsed / total) * 100).toFixed(1)}%)` } } }
+                    }
+                });
+            } else {
+                donutChart.data.labels = labels;
+                donutChart.data.datasets[0].data = data;
+                donutChart.data.datasets[0].backgroundColor = colors;
+                donutChart.update();
+            }
+        }
+
+        function renderLegend(ct) {
+            const total = Object.values(ct).reduce((a, b) => a + b, 0);
+            $('legend').innerHTML = Object.entries(ct).sort((a, b) => b[1] - a[1])
+                .map(([cat, val]) => `<span class="legend-item"><span class="legend-dot" style="background:${CAT_COLORS[cat]};"></span>${cat} <strong>${((val / total) * 100).toFixed(0)}%</strong></span>`)
+                .join('');
+        }
+
+        function buildBar(ct) {
+            const sorted = Object.entries(ct).sort((a, b) => b[1] - a[1]);
+            const labels = sorted.map(([c]) => c), data = sorted.map(([, v]) => parseFloat(v.toFixed(2)));
+            const colors = labels.map(l => CAT_COLORS[l]);
+            if (!barChart) {
+                barChart = new Chart($('bar-chart'), {
+                    type: 'bar',
+                    data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 6, borderSkipped: false }] },
+                    options: {
+                        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.x.toFixed(2)}` } } },
+                        scales: {
+                            x: { grid: { color: 'rgba(128,128,128,0.12)' }, ticks: { color: '#888780', font: { size: 12 }, callback: v => '$' + v.toLocaleString() } },
+                            y: { grid: { display: false }, ticks: { color: '#888780', font: { size: 13 } } }
+                        }
+                    }
+                });
+            } else {
+                barChart.data.labels = labels;
+                barChart.data.datasets[0].data = data;
+                barChart.data.datasets[0].backgroundColor = colors;
+                barChart.update();
+            }
+        }
+
+        /* ════════════════════════════════════════════
+           SANKEY — 4 hard-wired tiers, no BFS
+           Tier 0: Bank accounts
+           Tier 1: Credit cards
+           Tier 2: Categories
+           Tier 3: Individual expenses
+        ═══════════════════════════════════════════ */
+        function buildSankey() {
+            const svgEl = $('sankey-svg');
+            const svg = d3.select(svgEl);
+            svg.selectAll('*').remove();
+            if (!expenses.length) return;
+
+            const W = svgEl.parentElement.clientWidth || 880;
+
+            /* ── 1. Collect nodes into 4 explicit tier buckets ── */
+            const T = [{}, {}, {}, {}];   // T[0]=banks, T[1]=CCs, T[2]=cats, T[3]=exps
+            // Each entry: key → { key, label, color, value }
+
+            // Link buckets — completely separate so no key collisions possible
+            const L01 = {};  // bank  → CC      "bId|cId"
+            const L02 = {};  // bank  → cat     "bId|cat"
+            const L12 = {};  // CC    → cat     "cId|cat"
+            const L23 = {};  // cat   → exp     always unique: "cat|expId"
+
+            const bump = (obj, k, label, color, v) => {
+                if (!obj[k]) obj[k] = { key: k, label, color, value: 0 };
+                obj[k].value += v;
+            };
+            const agg = (obj, k, v) => { obj[k] = (obj[k] || 0) + v; };
+
+            expenses.forEach(e => {
+                const catColor = CAT_COLORS[e.cat] || '#888780';
+                const trunc = e.name.length > 24 ? e.name.slice(0, 22) + '…' : e.name;
+                const type = accountType(e.accountId);
+
+                // Tier 2 — category (aggregated)
+                bump(T[2], 'cat|' + e.cat, e.cat, catColor, e.amount);
+
+                // Tier 3 — individual expense (always unique)
+                const expKey = 'exp|' + e.id;
+                T[3][expKey] = { key: expKey, label: trunc, color: catColor, value: e.amount };
+
+                // cat → exp link (unique per expense, never aggregated)
+                L23['cat|' + e.cat + '§' + expKey] = {
+                    sk: 'cat|' + e.cat, tk: expKey, value: e.amount
+                };
+
+                if (type === 'bank') {
+                    const b = bankAccounts.find(a => a.id === e.accountId);
+                    if (!b) return;
+                    const bk = 'bnk|' + b.id;
+                    bump(T[0], bk, b.name + (b.last4 ? ' ••' + b.last4 : ''), COLOR_BANK, e.amount);
+                    agg(L02, bk + '§' + 'cat|' + e.cat, e.amount);
+                }
+
+                if (type === 'cc') {
+                    const c = creditCards.find(x => x.id === e.accountId);
+                    const b = c && bankAccounts.find(a => a.id === c.bankId);
+                    if (!c || !b) return;
+                    const bk = 'bnk|' + b.id;
+                    const ck = 'cc|' + c.id;
+                    bump(T[0], bk, b.name + (b.last4 ? ' ••' + b.last4 : ''), COLOR_BANK, e.amount);
+                    bump(T[1], ck, c.name + (c.last4 ? ' ••' + c.last4 : ''), COLOR_CC, e.amount);
+                    agg(L01, bk + '§' + ck, e.amount);
+                    agg(L12, ck + '§' + 'cat|' + e.cat, e.amount);
+                }
+            });
+
+            /* ── 2. Fixed column x positions ── */
+            const NW = 14;   // node bar width px
+            const VPAD = 8;    // vertical gap between nodes in same column
+            const HDR_H = 22;   // column header height
+            const ML = 46;
+            const MR = 225;  // right margin — space for expense labels
+            const MT = HDR_H + 10;
+            const MB = 16;
+
+            const innerW = W - ML - MR;
+            const COL_X = [ML, ML + innerW / 3, ML + 2 * innerW / 3, ML + innerW];
+
+            /* ── 3. Compute scale and position all nodes ── */
+            const nodeByKey = {};
+            const TIER_NAMES = ['BANK ACCOUNT', 'CREDIT CARD', 'CATEGORY', 'EXPENSES'];
+
+            const maxInAnyCol = Math.max(...T.map(t => Object.keys(t).length), 1);
+            const H = Math.max(300, maxInAnyCol * 46 + (maxInAnyCol - 1) * VPAD + MT + MB);
+            const innerH = H - MT - MB;
+
+            // Scale: min px-per-dollar across all non-empty tiers
+            let scale = Infinity;
+            T.forEach(tier => {
+                const nodes = Object.values(tier);
+                if (!nodes.length) return;
+                const totalV = nodes.reduce((s, n) => s + n.value, 0);
+                if (totalV > 0) scale = Math.min(scale, (innerH - (nodes.length - 1) * VPAD) / totalV);
+            });
+            if (!isFinite(scale) || scale <= 0) scale = 1;
+
+            /* ── Sort each tier so items are ordered and neighbours stay close ──
+               Strategy:
+                 T[0] banks  — sort by value desc (no upstream)
+                 T[1] CCs    — sort by value desc (typically 1-2 items)
+                 T[2] cats   — sort by value desc; tie-break: prefer the order that
+                               puts a cat closer to whichever bank/CC feeds it most
+                 T[3] exps   — group by category, groups sorted by cat total desc,
+                               within group sort by value desc (keeps same-cat exps together)
+            */
+
+            // Helper: weighted upstream centroid for a node key in tier ci
+            // (used after tier ci-1 is already positioned)
+            function upstreamCentroid(key, linkObjs) {
+                let weightedY = 0, totalW = 0;
+                linkObjs.forEach(([k, v]) => {
+                    const [sk, tk] = k.split('§');
+                    if (tk !== key) return;
+                    const sn = nodeByKey[sk];
+                    if (!sn) return;
+                    const mid = (sn.y0 + sn.y1) / 2;
+                    weightedY += mid * v;
+                    totalW += v;
+                });
+                return totalW > 0 ? weightedY / totalW : Infinity;
+            }
+
+            // Position one tier's nodes (already sorted) into nodeByKey
+            function placeTier(nodes, ci) {
+                const totalH = nodes.reduce((s, n) => s + Math.max(6, n.value * scale), 0)
+                    + (nodes.length - 1) * VPAD;
+                let y = MT + (innerH - totalH) / 2;
+                nodes.forEach(n => {
+                    const nh = Math.max(6, n.value * scale);
+                    n.x0 = COL_X[ci]; n.x1 = n.x0 + NW;
+                    n.y0 = y; n.y1 = y + nh;
+                    nodeByKey[n.key] = n;
+                    y += nh + VPAD;
+                });
+            }
+
+            // T[0] — banks: pure value desc
+            const banks = Object.values(T[0]).sort((a, b) => b.value - a.value);
+            placeTier(banks, 0);
+
+            // T[1] — CCs: value desc (upstream centroid not useful until cats known)
+            const ccs = Object.values(T[1]).sort((a, b) => b.value - a.value);
+            placeTier(ccs, 1);
+
+            // T[2] — cats: value desc, then secondary sort by upstream centroid
+            //   centroid pulls each cat toward whichever bank/CC funds it most
+            const L01entries = Object.entries(L01);
+            const L02entries = Object.entries(L02);
+            const L12entries = Object.entries(L12);
+            const upstreamCatEntries = [...L02entries, ...L12entries];
+
+            const cats = Object.values(T[2]).sort((a, b) => {
+                const vDiff = b.value - a.value;
+                if (Math.abs(vDiff) > 0.01) return vDiff;
+                return upstreamCentroid(a.key, upstreamCatEntries)
+                    - upstreamCentroid(b.key, upstreamCatEntries);
+            });
+            placeTier(cats, 2);
+
+            // T[3] — exps: group by category, order groups by cat node position (top-down),
+            //   within group sort by value desc — keeps all expenses of a category together
+            const catOrder = {};
+            cats.forEach((c, i) => { catOrder[c.key] = i; });
+
+            const exps = Object.values(T[3]).sort((a, b) => {
+                const aCat = 'cat|' + a.color; // color alone isn't a safe key; use L23 to find cat
+                // Recover category key from L23
+                const aCatKey = Object.values(L23).find(l => l.tk === a.key)?.sk || '';
+                const bCatKey = Object.values(L23).find(l => l.tk === b.key)?.sk || '';
+                const catDiff = (catOrder[aCatKey] ?? 999) - (catOrder[bCatKey] ?? 999);
+                if (catDiff !== 0) return catDiff;
+                return b.value - a.value; // within same cat: value desc
+            });
+            placeTier(exps, 3);
+
+            /* ── 4. Build link ribbons with stacking cursors ── */
+            // Separate cursors per tier-pair so stacking is always clean
+            const srcCur = {}, tgtCur = {};
+            Object.values(nodeByKey).forEach(n => { srcCur[n.key] = 0; tgtCur[n.key] = 0; });
+
+            const ribbons = [];
+            function makeRibbon(skKey, tkKey, value) {
+                const sn = nodeByKey[skKey], tn = nodeByKey[tkKey];
+                if (!sn || !tn || value <= 0) return;
+                const lhs = sn.value > 0 ? (value / sn.value) * (sn.y1 - sn.y0) : 0;
+                const lht = tn.value > 0 ? (value / tn.value) * (tn.y1 - tn.y0) : 0;
+                const sy0 = sn.y0 + srcCur[skKey];
+                const ty0 = tn.y0 + tgtCur[tkKey];
+                srcCur[skKey] += lhs;
+                tgtCur[tkKey] += lht;
+                ribbons.push({
+                    sx1: sn.x1, sy0, sy1: sy0 + lhs,
+                    tx0: tn.x0, ty0, ty1: ty0 + lht,
+                    color: sn.color,
+                    tip: `${sn.label} → ${tn.label}: $${value.toFixed(2)}`
+                });
+            }
+
+            // Process in strict tier order, sorted to match node positions (top-down)
+            // This ensures ribbon stacking follows the same visual order as the nodes
+            const nodeY = key => nodeByKey[key] ? nodeByKey[key].y0 : 0;
+
+            const sortedL01 = Object.entries(L01).sort(([ka], [kb]) => {
+                const [ska, tka] = ka.split('§'), [skb, tkb] = kb.split('§');
+                return nodeY(ska) - nodeY(skb) || nodeY(tka) - nodeY(tkb);
+            });
+            const sortedL02 = Object.entries(L02).sort(([ka], [kb]) => {
+                const [ska, tka] = ka.split('§'), [skb, tkb] = kb.split('§');
+                return nodeY(ska) - nodeY(skb) || nodeY(tka) - nodeY(tkb);
+            });
+            const sortedL12 = Object.entries(L12).sort(([ka], [kb]) => {
+                const [ska, tka] = ka.split('§'), [skb, tkb] = kb.split('§');
+                return nodeY(ska) - nodeY(skb) || nodeY(tka) - nodeY(tkb);
+            });
+            const sortedL23 = Object.values(L23).sort((a, b) =>
+                nodeY(a.sk) - nodeY(b.sk) || nodeY(a.tk) - nodeY(b.tk)
+            );
+
+            sortedL01.forEach(([k, v]) => { const [sk, tk] = k.split('§'); makeRibbon(sk, tk, v); });
+            sortedL02.forEach(([k, v]) => { const [sk, tk] = k.split('§'); makeRibbon(sk, tk, v); });
+            sortedL12.forEach(([k, v]) => { const [sk, tk] = k.split('§'); makeRibbon(sk, tk, v); });
+            sortedL23.forEach(l => makeRibbon(l.sk, l.tk, l.value));
+
+            /* ── 5. Render ── */
+            svgEl.setAttribute('height', H);
+            svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const textFill = isDark ? '#e8e8e2' : '#1a1a18';
+            const subFill = isDark ? '#7a7a74' : '#6b6a65';
+            const tip = $('sk-tip');
+            const showTip = (ev, msg) => {
+                tip.textContent = msg; tip.style.opacity = 1;
+                tip.style.left = (ev.clientX + 14) + 'px';
+                tip.style.top = (ev.clientY - 34) + 'px';
+            };
+            const hideTip = () => { tip.style.opacity = 0; };
+
+            // Column headers
+            TIER_NAMES.forEach((name, i) => {
+                svg.append('text')
+                    .attr('x', COL_X[i] + NW / 2)
+                    .attr('y', 13)
+                    .attr('text-anchor', 'middle')
+                    .attr('font-size', 9)
+                    .attr('font-weight', '700')
+                    .attr('fill', subFill)
+                    .attr('font-family', 'system-ui,sans-serif')
+                    .text(name);
+            });
+
+            // Ribbon paths
+            ribbons.forEach(r => {
+                const mx = (r.sx1 + r.tx0) / 2;
+                const d =
+                    `M${r.sx1},${r.sy0}C${mx},${r.sy0} ${mx},${r.ty0} ${r.tx0},${r.ty0}` +
+                    `L${r.tx0},${r.ty1}C${mx},${r.ty1} ${mx},${r.sy1} ${r.sx1},${r.sy1}Z`;
+                svg.append('path')
+                    .attr('d', d).attr('fill', r.color).attr('opacity', 0.3)
+                    .on('mousemove', ev => showTip(ev, r.tip))
+                    .on('mouseleave', hideTip);
+            });
+
+            // Node bars + labels
+            Object.values(nodeByKey).forEach(n => {
+                svg.append('rect')
+                    .attr('x', n.x0).attr('y', n.y0)
+                    .attr('width', NW).attr('height', Math.max(4, n.y1 - n.y0))
+                    .attr('fill', n.color).attr('rx', 3)
+                    .on('mousemove', ev => showTip(ev, `${n.label}: $${n.value.toFixed(2)}`))
+                    .on('mouseleave', hideTip);
+
+                const isExp = n.key.startsWith('exp|');
+                const isCat = n.key.startsWith('cat|');
+                const midY = (n.y0 + n.y1) / 2;
+                const xText = isCat ? n.x0 - 6 : n.x1 + 6;
+                const anchor = isCat ? 'end' : 'start';
+
+                svg.append('text')
+                    .attr('x', xText).attr('y', midY + (isExp ? 0 : -6))
+                    .attr('dy', '0.35em').attr('text-anchor', anchor)
+                    .attr('font-size', isExp ? 11 : 12)
+                    .attr('font-weight', isExp ? '400' : '600')
+                    .attr('fill', textFill).attr('font-family', 'system-ui,sans-serif')
+                    .text(n.label);
+
+                if (!isExp) {
+                    svg.append('text')
+                        .attr('x', xText).attr('y', midY + 8).attr('dy', '0.35em')
+                        .attr('text-anchor', anchor).attr('font-size', 10)
+                        .attr('fill', subFill).attr('font-family', 'system-ui,sans-serif')
+                        .text('$' + n.value.toFixed(2));
+                }
+            });
+        }
+        /* ════════════════════════════════════════════
+           Expense log
+        ═══════════════════════════════════════════ */
+        function renderList() {
+            const list = $('exp-list');
+            list.querySelectorAll('.exp-item').forEach(el => el.remove());
+            $('empty-list').style.display = expenses.length ? 'none' : 'block';
+
+            expenses.slice().reverse().forEach((e, ri) => {
+                const i = expenses.length - 1 - ri;
+                const acc = findAccount(e.accountId);
+                const type = accountType(e.accountId);
+                const badgeClass = type === 'cc' ? 'badge-cc' : 'badge-bank';
+                const badgeText = acc ? (acc.last4 ? acc.name + ' ••' + acc.last4 : acc.name) : (type === 'cc' ? 'CC' : 'Bank');
+
+                const row = document.createElement('div');
+                row.className = 'exp-item';
+                row.innerHTML = `
+      <span class="exp-dot" style="background:${CAT_COLORS[e.cat]};"></span>
+      <span class="exp-name" title="${e.name}">${e.name}</span>
+      <span class="exp-cat">${e.cat}</span>
+      <span class="exp-badge ${badgeClass}">${badgeText}</span>
+      <span class="exp-amount">$${e.amount.toFixed(2)}</span>
+      <button class="del-btn" data-idx="${i}" aria-label="Delete ${e.name}"><i class="ti ti-trash"></i></button>
+    `;
+                list.appendChild(row);
+            });
+
+            list.querySelectorAll('.del-btn').forEach(btn => {
+                btn.addEventListener('click', () => { expenses.splice(parseInt(btn.dataset.idx), 1); update(); });
+            });
+        }
+
+        /* ════════════════════════════════════════════
+           Master update
+        ═══════════════════════════════════════════ */
+        function update() {
+            const total = expenses.reduce((a, e) => a + e.amount, 0);
+            const bankSum = expenses.filter(e => accountType(e.accountId) === 'bank').reduce((a, e) => a + e.amount, 0);
+            const ccSum = expenses.filter(e => accountType(e.accountId) === 'cc').reduce((a, e) => a + e.amount, 0);
+
+            $('total-display').textContent = '$' + total.toFixed(2);
+            $('bank-display').textContent = '$' + bankSum.toFixed(2);
+            $('cc-display').textContent = '$' + ccSum.toFixed(2);
+
+            // Savings
+            const income = parseFloat($('income-input').value) || 0;
+            const savings = income - total;
+            const savCard = $('savings-card');
+            const savDisp = $('savings-display');
+            const savPct = $('savings-pct');
+
+            if (income > 0) {
+                const pct = (savings / income) * 100;
+                savDisp.textContent = (savings >= 0 ? '+' : '') + '$' + Math.abs(savings).toFixed(2);
+                savDisp.className = 'value ' + (savings >= 0 ? 'savings-pos' : 'savings-neg');
+                savPct.textContent = pct.toFixed(1) + '% of income';
+                savCard.classList.toggle('negative', savings < 0);
+            } else {
+                savDisp.textContent = '—';
+                savDisp.className = 'value';
+                savPct.textContent = income === 0 && total > 0 ? 'Enter income above' : '';
+                savCard.classList.remove('negative');
+            }
+
+            const has = expenses.length > 0;
+            $('empty-donut').style.display = has ? 'none' : 'block';
+            $('donut-wrap').style.display = has ? 'block' : 'none';
+            $('empty-bar').style.display = has ? 'none' : 'block';
+            $('bar-wrap').style.display = has ? 'block' : 'none';
+            $('empty-sankey').style.display = has ? 'none' : 'block';
+            $('sankey-wrap').style.display = has ? 'block' : 'none';
+
+            if (has) {
+                buildDonut(getCatTotals()); renderLegend(getCatTotals()); buildBar(getCatTotals()); buildSankey();
+            } else {
+                if (donutChart) { donutChart.destroy(); donutChart = null; }
+                if (barChart) { barChart.destroy(); barChart = null; }
+                $('legend').innerHTML = '';
+                d3.select('#sankey-svg').selectAll('*').remove();
+            }
+            renderList();
+        }
+
+        /* ════════════════════════════════════════════
+           Add expense
+        ═══════════════════════════════════════════ */
+        $('add-btn').addEventListener('click', () => {
+            const name = $('exp-name').value.trim();
+            const amount = parseFloat($('exp-amount').value);
+            const cat = $('exp-cat').value;
+            const accountId = parseInt($('exp-account').value);
+            const err = $('err-msg');
+
+            if (!name || isNaN(amount) || amount <= 0 || !accountId) { err.style.display = 'block'; return; }
+            err.style.display = 'none';
+            expenses.push({ id: uid(), name, amount, cat, accountId });
+            $('exp-name').value = '';
+            $('exp-amount').value = '';
+            $('exp-name').focus();
+            update();
+        });
+
+        ['exp-name', 'exp-amount', 'exp-cat', 'exp-account'].forEach(id => {
+            $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('add-btn').click(); });
+        });
+
+        $('accounts-link').addEventListener('click', () => {
+            const body = $('accounts-body');
+            const icon = $('accounts-toggle').querySelector('i');
+            body.classList.remove('collapsed');
+            icon.className = 'ti ti-chevron-up';
+            $('bank-name').focus();
+            $('accounts-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        window.addEventListener('resize', () => { if (expenses.length) buildSankey(); });
+
+        /* ── Info Modal ── */
+        const modal = $('info-modal');
+        $('info-btn').addEventListener('click', () => modal.classList.add('open'));
+        $('modal-close').addEventListener('click', () => modal.classList.remove('open'));
+        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+
+        /* ── Income input ── */
+        $('income-input').addEventListener('input', update);
+
+        /* ── Init ── */
+        renderAccountChips();
+        update();
+    </script>
+</body>
+
+</html>
