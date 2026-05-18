@@ -34,7 +34,7 @@ Click the **[Live Demo](https://vatsalgandhi93.github.io/Expense-Tracker/)** lin
 ### Option 2 — Run locally
 ```bash
 # Clone the repo
-git clone [https://github.com/vatsalgandhi93/Expense-Tracker.git]
+git clone https://github.com/vatsalgandhi93/Expense-Tracker.git
 
 # Open in your browser — that's it
 open index.html
