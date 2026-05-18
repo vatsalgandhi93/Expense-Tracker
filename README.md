@@ -29,7 +29,7 @@ A clean, interactive monthly expense tracker that runs entirely in your browser 
 ## 🚀 Getting Started
 
 ### Option 1 — Use the live demo
-Click the **[Live Demo](https://yourusername.github.io/expense-tracker)** link above. Nothing to install.
+Click the **[Live Demo](https://vatsalgandhi93.github.io/Expense-Tracker/)** link above. Nothing to install.
 
 ### Option 2 — Run locally
 ```bash
