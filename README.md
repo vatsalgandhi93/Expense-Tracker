@@ -3,7 +3,6 @@
 A clean, interactive monthly expense tracker that runs entirely in your browser — no signup, no backend, no data leaving your machine. One HTML file. Open it and go.
 
 > 🔗 **[Live Demo →](https://vatsalgandhi93.github.io/Expense-Tracker/)**
-> > 🔗 **<a href="https://vatsalgandhi93.github.io/Expense-Tracker/" target="_blank">Live Demo →</a>**
 
 ---
 ![Expense Tracker Dashboard](screenshot-dashboard.png)
