@@ -13,7 +13,7 @@ A clean, interactive monthly expense tracker that runs entirely in your browser 
 - **Account management** — add multiple bank accounts and credit cards, with each credit card linked to the bank account that pays it off
 - **Expense logging** — log expenses by description, amount, category, and payment method
 - **Net income & savings** — enter your monthly take-home pay and see your savings (or deficit) update in real time
-- **10 spending categories** — Housing & Utilities, Food & Dining, Transportation, Childcare & Kids' Expenses, Personal Care Fitness & Discretionary, Healthcare & Insurance, Travel & Entertainment, Savings & Investments, Miscellaneous
+- **9 spending categories** — Housing & Utilities, Food & Dining, Transportation, Childcare & Kids' Expenses, Personal Care Fitness & Discretionary, Healthcare & Insurance, Travel & Entertainment, Savings & Investments, Miscellaneous
 - **Donut chart** — live category breakdown with percentage splits
 - **Bar chart** — spending by category ranked largest to smallest
 - **Sankey flow diagram** — traces every dollar across 4 stages:
