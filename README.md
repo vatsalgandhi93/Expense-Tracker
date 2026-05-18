@@ -5,10 +5,7 @@ A clean, interactive monthly expense tracker that runs entirely in your browser 
 > 🔗 **[Live Demo →](https://vatsalgandhi93.github.io/Expense-Tracker/)**
 
 ---
-
-![Expense Tracker Dashboard](screenshot.png)
-<!-- Replace screenshot.png with your actual screenshot filename -->
-
+![Expense Tracker Dashboard](screenshot-dashboard.png)
 ---
 
 ## ✨ Features
@@ -76,9 +73,11 @@ No frameworks. No bundler. No dependencies to install.
 
 ```
 expense-tracker/
-│
-├── index.html        # The entire application — self-contained
-└── README.md         # This file
+├── index.html
+├── README.md
+├── screenshot-dashboard.png
+├── screenshot-charts.png
+└── screenshot-sankey.png
 ```
 
 ---
@@ -88,8 +87,6 @@ expense-tracker/
 | Dashboard | Charts | Sankey Diagram |
 |---|---|---|
 | ![Dashboard](screenshot-dashboard.png) | ![Charts](screenshot-charts.png) |![Sankey](screenshot-sankey.png) |
-
-<!-- Add your own screenshots to the repo and update filenames above -->
 
 ---
 
