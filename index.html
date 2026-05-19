@@ -1059,6 +1059,106 @@
         @media (prefers-reduced-motion: reduce) {
             .info-btn { animation: none; }
         }
+
+        /* ── PDF / Print button ── */
+        .pdf-btn {
+            background: none;
+            border: 0.5px solid var(--border-med);
+            border-radius: var(--radius-md);
+            padding: 0 14px;
+            height: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            font-family: var(--font-sans);
+            transition: background .15s, color .15s, border-color .15s;
+        }
+
+        .pdf-btn:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        .pdf-btn i { font-size: 16px; }
+
+        /* ── Print header (only visible when printing) ── */
+        .print-header {
+            display: none;
+        }
+
+        /* ══════════════════════════════════════
+           @media print — clean PDF layout
+        ══════════════════════════════════════ */
+        @media print {
+            /* Reset page */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+            body { background: #fff !important; padding: 0; margin: 0; }
+
+            .container { max-width: 100%; padding: 0 16px; }
+
+            /* Hide interactive / nav elements */
+            .info-btn,
+            .pdf-btn,
+            .add-panel,
+            #accounts-panel,
+            .contact-strip,
+            .feedback-note,
+            .sk-tip,
+            .modal-overlay,
+            .exp-list .del-btn { display: none !important; }
+
+            /* Show print header */
+            .print-header {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid #e0e0e0;
+                padding-bottom: 10px;
+                margin-bottom: 16px;
+            }
+
+            .print-header .ph-title {
+                font-size: 18px;
+                font-weight: 700;
+                color: #1a1a18;
+            }
+
+            .print-header .ph-date {
+                font-size: 12px;
+                color: #6b6a65;
+            }
+
+            /* Keep the regular header logo + title visible */
+            header { margin-bottom: 12px !important; }
+
+            /* Metrics row — compact */
+            .metrics { gap: 8px; margin-bottom: 12px; }
+            .metric-card { padding: .7rem .9rem; }
+
+            /* Charts: side by side */
+            .two-col { display: grid !important; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+            /* Force panels to be visible */
+            .panel { break-inside: avoid; margin-bottom: 12px; }
+
+            /* Sankey — give it room */
+            #sankey-wrap, #bar-wrap { display: block !important; }
+            #empty-sankey, #empty-bar, #empty-donut { display: none !important; }
+
+            /* Expense log — show full list without scroll */
+            .exp-list { max-height: none !important; overflow: visible !important; }
+
+            /* Page breaks */
+            .two-col { page-break-inside: avoid; }
+            #sankey-wrap { page-break-before: auto; }
+        }
     </style>
 </head>
 
@@ -1068,7 +1168,6 @@
         <header
             style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:2rem;">
             <div style="display:flex; align-items:center; gap:14px;">
-                <svg width="44" height="44" viewBox="0 0 50 44"
                 <svg width="44" height="44" viewBox="0 0 50 44"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-label="Expense flow icon" style="flex-shrink:0; display:block;">
@@ -1192,7 +1291,16 @@
             <button class="info-btn" id="info-btn" style="flex-shrink:0; margin-top:4px;">
                 <i class="ti ti-info-circle" aria-hidden="true"></i> How to use
             </button>
+            <button class="pdf-btn" id="pdf-btn" style="flex-shrink:0; margin-top:4px;" title="Save as PDF">
+                <i class="ti ti-file-type-pdf" aria-hidden="true"></i> Save PDF
+            </button>
         </header>
+
+        <!-- Print-only header: shown only when printing/saving as PDF -->
+        <div class="print-header">
+            <span class="ph-title">Expenses Tracker — Monthly Report</span>
+            <span class="ph-date" id="print-date"></span>
+        </div>
 
         <!-- ── Contact strip ── -->
         <div class="contact-strip">
@@ -2182,6 +2290,16 @@
         $('modal-close').addEventListener('click', () => modal.classList.remove('open'));
         modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+
+        /* ── PDF / Print ── */
+        $('pdf-btn').addEventListener('click', () => {
+            // Set the date in the print header
+            const now = new Date();
+            $('print-date').textContent = now.toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+            window.print();
+        });
 
         /* ── Income input ── */
         $('income-input').addEventListener('input', update);
