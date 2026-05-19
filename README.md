@@ -101,7 +101,14 @@ Have a suggestion or found a bug? I'd love to hear from you.
 
 ## 📄 License
 
-MIT — free to use, modify, and share.
+Copyright (c) 2026 Vatsal Gandhi. All rights reserved.
+
+Permission is granted to use this software for personal, 
+non-commercial purposes. Redistribution, reproduction, 
+or modification of this code, in whole or in part, 
+without prior written permission from the author, is prohibited.
+
+Attribution required if shared publicly.
 
 ---
 
