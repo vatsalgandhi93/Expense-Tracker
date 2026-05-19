@@ -2,10 +2,10 @@
 
 A clean, interactive monthly expense tracker that runs entirely in your browser — no signup, no backend, no data leaving your machine. One HTML file. Open it and go.
 
-> 🔗 **[Live Demo →](https://vatsalgandhi93.github.io/Expense-Tracker/)**
+> 🔗 **[Expenses Tracker →](https://vatsalgandhi93.github.io/Expense-Tracker/)**
 
 ---
-![Expense Tracker Dashboard](screenshot-dashboard.png)
+![Expenses Tracker Dashboard](screenshot-dashboard.png)
 ---
 
 ## ✨ Features
@@ -29,7 +29,7 @@ A clean, interactive monthly expense tracker that runs entirely in your browser 
 ## 🚀 Getting Started
 
 ### Option 1 — Use the live demo
-Click the **[Live Demo](https://vatsalgandhi93.github.io/Expense-Tracker/)** link above. Nothing to install.
+Click the **[Expenses Tracker](https://vatsalgandhi93.github.io/Expense-Tracker/)** link above. Nothing to install.
 
 ### Option 2 — Run locally
 ```bash
