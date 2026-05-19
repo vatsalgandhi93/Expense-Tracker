@@ -73,6 +73,7 @@ No frameworks. No bundler. No dependencies to install.
 
 ```
 expense-tracker/
+├── LICENSE
 ├── index.html
 ├── README.md
 ├── screenshot-dashboard.png
