@@ -1,6 +1,6 @@
 # License
 
-Copyright (c) 2025 Vatsal Gandhi. All rights reserved.
+Copyright (c) 2026 Vatsal Gandhi. All rights reserved.
 
 ---
 
