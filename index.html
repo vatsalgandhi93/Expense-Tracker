@@ -828,6 +828,36 @@
             text-decoration: underline;
         }
 
+        /* ── Copyright bar ── */
+        .copyright-bar {
+            margin-top: 1.25rem;
+            padding: 1rem 0 0.5rem;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .copyright-bar .cr-line {
+            display: block;
+        }
+        .copyright-bar .cr-name {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .copyright-bar a {
+            color: var(--color-bank);
+            text-decoration: none;
+            transition: color .15s;
+        }
+        .copyright-bar a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+        .copyright-bar .cr-divider {
+            margin: 0 6px;
+            color: var(--border-med);
+        }
+
         /* ── Info Modal ── */
         .modal-overlay {
             display: none;
@@ -1087,6 +1117,196 @@
 
         .pdf-btn i { font-size: 16px; }
 
+        /* ══════════════════════════════════════
+           IMPORT STATEMENT MODAL
+        ══════════════════════════════════════ */
+        .import-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.5);
+            z-index: 1001;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+        .import-overlay.open { display: flex; }
+        .import-box {
+            background: var(--bg-card);
+            border: 0.5px solid var(--border-med);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 820px;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0,0,0,.22);
+            margin: auto;
+        }
+        .import-close {
+            position: absolute; top: 1.25rem; right: 1.25rem;
+            background: var(--bg-surface); border: none; border-radius: 50%;
+            width: 32px; height: 32px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary); font-size: 18px;
+            transition: background .15s;
+        }
+        .import-close:hover { background: var(--bg-surface2); }
+        .import-box h2 { font-family: var(--font); font-size: 22px; font-weight: normal; margin: 0 0 4px; }
+        .import-box .import-sub { font-size: 13px; color: var(--text-secondary); margin: 0 0 1.5rem; }
+
+        /* Type selector cards */
+        .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem; }
+        .type-card {
+            padding: 16px;
+            border: 2px solid var(--border-med);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: border-color .15s, background .15s;
+            text-align: center;
+        }
+        .type-card:hover { border-color: #378ADD; background: rgba(55,138,221,.04); }
+        .type-card.active { border-color: #378ADD; background: rgba(55,138,221,.08); }
+        .type-card i { font-size: 28px; display: block; margin-bottom: 6px; }
+        .type-card .tc-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .type-card .tc-sub { font-size: 11px; color: var(--text-secondary); }
+        .type-card.type-cc i   { color: #9333EA; }
+        .type-card.type-bank i { color: #2563EB; }
+
+        .section-label {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .07em; color: var(--text-secondary); margin-bottom: 8px;
+        }
+
+        /* Upload zone */
+        .upload-zone {
+            border: 2px dashed var(--border-med);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color .15s, background .15s;
+            margin-bottom: 1rem;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: #378ADD;
+            background: rgba(55,138,221,.05);
+        }
+        .upload-zone i { font-size: 32px; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+        .upload-zone .uz-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+        .upload-zone .uz-sub { font-size: 11px; color: var(--text-secondary); }
+        #pdf-file-input { display: none; }
+
+        /* Inline form rows */
+        .inline-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; align-items: flex-start; }
+        .inline-row select, .inline-row input {
+            height: 36px; padding: 0 10px; font-size: 13px;
+            border: 0.5px solid var(--border-med); border-radius: var(--radius-md);
+            background: var(--bg-surface); color: var(--text-primary);
+            font-family: var(--font-sans); outline: none; appearance: none; -webkit-appearance: none;
+        }
+        .inline-row select { padding-right: 26px; min-width: 200px; flex: 1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 8px center;
+        }
+
+        .new-account-box {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            border: 0.5px solid var(--border);
+            padding: 12px;
+            margin-bottom: 1rem;
+        }
+        .new-account-box .nab-hint { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+
+        /* Bank-statement options */
+        .bank-options {
+            background: rgba(37,99,235,.05);
+            border: 0.5px solid rgba(37,99,235,.18);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            margin-bottom: 1rem;
+            font-size: 12px;
+            display: none;
+        }
+        .bank-options.visible { display: block; }
+        .bank-options label {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--text-primary); cursor: pointer;
+            font-size: 13px;
+        }
+        .bank-options input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; }
+        .bank-options .bo-sub { font-size: 11px; color: var(--text-secondary); margin-top: 4px; margin-left: 23px; }
+
+        /* Parse status */
+        .parse-status {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .parse-status.visible { display: flex; }
+        .parse-status i { font-size: 18px; }
+        .parse-status.error { color: #e24b4a; background: rgba(226,75,74,.08); }
+        .parse-status.success { color: #1D9E75; background: rgba(29,158,117,.08); }
+
+        /* Review table */
+        .review-section { display: none; }
+        .review-section.visible { display: block; }
+        .review-top { display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+        .review-top h3 { font-size: 13px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .07em; color: var(--text-secondary); margin: 0; }
+        .review-stats { font-size: 12px; color: var(--text-secondary); }
+        .review-stats strong { color: var(--text-primary); }
+
+        .review-table-wrap { max-height: 320px; overflow-y: auto; border-radius: var(--radius-md);
+            border: 0.5px solid var(--border); margin-bottom: 1rem; }
+        .review-table-wrap::-webkit-scrollbar { width: 4px; }
+        .review-table-wrap::-webkit-scrollbar-thumb { background: var(--border-med); border-radius: 4px; }
+
+        table.rtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+        table.rtable thead th {
+            background: var(--bg-surface); padding: 8px 10px;
+            text-align: left; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .06em;
+            color: var(--text-secondary); position: sticky; top: 0;
+        }
+        table.rtable tbody tr { border-top: 0.5px solid var(--border); }
+        table.rtable tbody tr.excluded { opacity: 0.4; }
+        table.rtable tbody td { padding: 7px 10px; color: var(--text-primary); }
+        table.rtable tbody td.td-amt { font-weight: 600; font-variant-numeric: tabular-nums;
+            white-space: nowrap; }
+        table.rtable tbody td.td-check { width: 36px; }
+        table.rtable select.cat-sel {
+            height: 28px; font-size: 12px; padding: 0 24px 0 6px;
+            border: 0.5px solid var(--border-med); border-radius: 4px;
+            background: var(--bg-surface); color: var(--text-primary);
+            font-family: var(--font-sans); outline: none; appearance: none;
+            -webkit-appearance: none; width: 100%; min-width: 160px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 6px center;
+        }
+
+        /* Action row */
+        .import-actions { display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; flex-wrap: wrap; }
+        .import-actions .ghost-btn { font-size: 12px; color: var(--color-bank);
+            cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+        .confirm-import-btn {
+            height: 40px; padding: 0 24px; background: var(--text-primary);
+            color: var(--bg-page); border: none; border-radius: var(--radius-md);
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 7px; font-family: var(--font-sans);
+            transition: opacity .15s;
+        }
+        .confirm-import-btn:hover { opacity: .82; }
+        .confirm-import-btn:disabled { opacity: .4; cursor: not-allowed; }
+
         /* ── Print header (only visible when printing) ── */
         .print-header {
             display: none;
@@ -1106,10 +1326,12 @@
             /* Hide interactive / nav elements */
             .info-btn,
             .pdf-btn,
+            #import-btn,
             .add-panel,
             #accounts-panel,
             .contact-strip,
             .feedback-note,
+            .copyright-bar,
             .sk-tip,
             .modal-overlay,
             .exp-list .del-btn { display: none !important; }
@@ -1291,8 +1513,11 @@
             <button class="info-btn" id="info-btn" style="flex-shrink:0; margin-top:4px;">
                 <i class="ti ti-info-circle" aria-hidden="true"></i> How to use
             </button>
-            <button class="pdf-btn" id="pdf-btn" style="flex-shrink:0; margin-top:4px;" title="Save as PDF">
-                <i class="ti ti-file-type-pdf" aria-hidden="true"></i> Save PDF
+            <button class="pdf-btn" id="pdf-btn" style="flex-shrink:0; margin-top:4px; width:40px; padding:0; justify-content:center;" title="Download as PDF" aria-label="Download as PDF">
+                <i class="ti ti-download" aria-hidden="true"></i>
+            </button>
+            <button class="pdf-btn" id="import-btn" style="flex-shrink:0; margin-top:4px;" title="Import statement">
+                <i class="ti ti-file-import" aria-hidden="true"></i> Import Statement
             </button>
         </header>
 
@@ -1325,8 +1550,8 @@
             <div class="modal-box">
                 <button class="modal-close" id="modal-close" aria-label="Close"><i class="ti ti-x"></i></button>
                 <h2>How to use this dashboard</h2>
-                <p class="modal-sub">Track every dollar from your bank account to each individual expense — with live
-                    charts that update as you type.</p>
+                <p class="modal-sub">Track every dollar from your bank account to each spending category — with live
+                    charts that update as you type, plus import &amp; export options.</p>
 
                 <div class="modal-section">
                     <h3><i class="ti ti-list-numbers" style="margin-right:5px;" aria-hidden="true"></i>Getting started
@@ -1346,15 +1571,29 @@
                         </div>
                         <div class="step-item">
                             <div class="step-num">3</div>
-                            <p class="step-text"><strong>Log an expense</strong> — fill in a description, amount,
+                            <p class="step-text"><strong>Log an expense manually</strong> — fill in a description, amount,
                                 category, and select which account or card you paid with. Hit Add or press Enter.
                                 <span>All charts update instantly.</span>
                             </p>
                         </div>
                         <div class="step-item">
                             <div class="step-num">4</div>
-                            <p class="step-text"><strong>Delete any entry</strong> by clicking the trash icon in the
-                                expense log. <span>All charts recalculate automatically.</span></p>
+                            <p class="step-text"><strong>Or import a statement</strong> — click <em>Import Statement</em>,
+                                choose Credit Card or Bank Account, pick the account, and drop in a PDF. Transactions are
+                                auto-parsed and categorised. <span>Review the list and confirm — anything you uncheck won't
+                                be added.</span></p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">5</div>
+                            <p class="step-text"><strong>Track your savings</strong> — enter your monthly net income in
+                                the Savings tile and see how much you're keeping vs spending. <span>The card flips to red
+                                if you overspend.</span></p>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">6</div>
+                            <p class="step-text"><strong>Save your view as PDF</strong> — click the download button in
+                                the header anytime to export a clean PDF snapshot of your current dashboard. <span>Great
+                                for monthly archives or sharing.</span></p>
                         </div>
                     </div>
                 </div>
@@ -1390,18 +1629,134 @@
                             <span class="sf-arrow">→</span>
                             <span class="sf-node"
                                 style="background:rgba(55,138,221,.12); color:#378ADD;">Category</span>
-                            <span class="sf-arrow">→</span>
-                            <span class="sf-node"
-                                style="background:var(--bg-surface2); color:var(--text-secondary);">Each expense</span>
                         </div>
-                        <p class="sf-desc">Every ribbon in the diagram represents money flowing between nodes. The
+                        <p class="sf-desc">Every ribbon in the diagram represents money flowing between stages. The
                             <strong>wider the ribbon</strong>, the more money moved that way. Bank-direct expenses skip
                             the credit card column entirely, showing a long ribbon straight to their category. Hover any
                             node or ribbon for the exact dollar amount.
                         </p>
-                        <p class="sf-desc" style="margin-top:6px;">If you only use one bank account and no credit cards,
-                            you'll see a clean 3-column chart: bank → category → individual expenses. Add a credit card
-                            and a 4th column appears automatically.</p>
+                        <p class="sf-desc" style="margin-top:6px;">If you only use bank accounts with no credit cards,
+                            you'll see a 2-column flow from bank straight to category. Add a credit card and the middle
+                            column appears automatically.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             IMPORT STATEMENT MODAL
+        ══════════════════════════════════════ -->
+        <div class="import-overlay" id="import-modal" role="dialog" aria-modal="true">
+            <div class="import-box">
+                <button class="import-close" id="import-close" aria-label="Close"><i class="ti ti-x"></i></button>
+                <h2>Import Statement</h2>
+                <p class="import-sub">Upload a PDF statement — transactions will be parsed and auto-categorised. Review and confirm before importing.</p>
+
+                <!-- Step 1: Statement type selector -->
+                <div class="section-label">1. What type of statement is this?</div>
+                <div class="type-grid">
+                    <div class="type-card type-cc" id="type-cc">
+                        <i class="ti ti-credit-card"></i>
+                        <div class="tc-title">Credit Card Statement</div>
+                        <div class="tc-sub">Every line is a charge</div>
+                    </div>
+                    <div class="type-card type-bank" id="type-bank">
+                        <i class="ti ti-building-bank"></i>
+                        <div class="tc-title">Bank Account Statement</div>
+                        <div class="tc-sub">Debits and credits — only debits are imported</div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Account selector — populated by type -->
+                <div id="account-step" style="display:none;">
+                    <div class="section-label" id="account-label">2. Which account is this for?</div>
+                    <div class="inline-row">
+                        <select id="import-account-sel">
+                            <option value="">— select —</option>
+                        </select>
+                    </div>
+
+                    <!-- New account inline form -->
+                    <div class="new-account-box" id="new-account-box" style="display:none;">
+                        <div class="nab-hint" id="new-account-hint">Enter the new card details — it will be added to your accounts.</div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <input type="text" id="new-acc-name" placeholder="Name (e.g. Chase Sapphire)"
+                                style="flex:1; min-width:170px;"/>
+                            <input type="text" id="new-acc-last4" placeholder="Last 4" maxlength="4"
+                                style="width:90px;"/>
+                            <select id="new-acc-bank" style="flex:1; min-width:170px;">
+                                <option value="">— paid from bank account —</option>
+                            </select>
+                        </div>
+                        <p id="new-acc-err" style="font-size:11px; color:#e24b4a; display:none; margin:6px 0 0;">
+                            Please fill all required fields.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Bank-statement options -->
+                <div class="bank-options" id="bank-options">
+                    <label>
+                        <input type="checkbox" id="include-credits" />
+                        Include credits / deposits as income
+                    </label>
+                    <div class="bo-sub">Off (recommended): only debits are imported as expenses. On: credits are also shown for review.</div>
+                </div>
+
+                <!-- Step 4: Upload zone -->
+                <div id="upload-step" style="display:none;">
+                    <div class="section-label">3. Upload the PDF</div>
+                    <div class="upload-zone" id="upload-zone">
+                        <i class="ti ti-cloud-upload"></i>
+                        <div class="uz-title">Drop your PDF here or click to browse</div>
+                        <div class="uz-sub">Most major US bank and credit card formats supported</div>
+                    </div>
+                    <input type="file" id="pdf-file-input" accept=".pdf" />
+                </div>
+
+                <!-- Parse status -->
+                <div class="parse-status" id="parse-status">
+                    <i class="ti ti-loader-2" id="parse-icon"></i>
+                    <span id="parse-msg">Parsing…</span>
+                </div>
+
+                <!-- Review -->
+                <div class="review-section" id="review-section">
+                    <div class="review-top">
+                        <h3>Review transactions</h3>
+                        <span class="review-stats" id="review-stats"></span>
+                    </div>
+                    <div class="review-table-wrap">
+                        <table class="rtable" id="review-table">
+                            <thead>
+                                <tr>
+                                    <th class="td-check"><input type="checkbox" id="check-all" checked /></th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="review-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="import-actions">
+                        <div style="display:flex; gap:14px;">
+                            <button class="ghost-btn" id="sel-all-btn">Select / deselect all</button>
+                            <button class="ghost-btn" id="show-raw-btn">🔍 Show raw text</button>
+                        </div>
+                        <button class="confirm-import-btn" id="confirm-import-btn" disabled>
+                            <i class="ti ti-check"></i>
+                            <span id="confirm-label">Add 0 expenses</span>
+                        </button>
+                    </div>
+                    <div id="raw-text-wrap" style="display:none; margin-top:12px;">
+                        <div class="section-label">Extracted raw text (for debugging)</div>
+                        <textarea id="raw-text-view" readonly
+                            style="width:100%; height:180px; font-size:11px; font-family:monospace;
+                            background:var(--bg-surface); border:0.5px solid var(--border-med);
+                            border-radius:var(--radius-md); padding:10px; color:var(--text-secondary);
+                            resize:vertical; outline:none; box-sizing:border-box;"></textarea>
                     </div>
                 </div>
             </div>
@@ -1516,8 +1871,7 @@
                         <option value="Food & Dining">Food &amp; Dining</option>
                         <option value="Transportation">Transportation</option>
                         <option value="Childcare & Kids' Expenses">Childcare &amp; Kids' Expenses</option>
-                        <option value="Personal Care, Fitness & Discretionary">Personal Care, Fitness &amp;
-                            Discretionary</option>
+                        <option value="Lifestyle Spending">Lifestyle Spending</option>
                         <option value="Healthcare & Insurance">Healthcare &amp; Insurance</option>
                         <option value="Travel & Entertainment">Travel &amp; Entertainment</option>
                         <option value="Savings & Investments">Savings &amp; Investments</option>
@@ -1552,25 +1906,25 @@
             </div>
 
             <div class="panel" style="margin-bottom:0;">
-                <div class="panel-header"><span class="panel-title">Expense log</span></div>
-                <div class="exp-list" id="exp-list">
-                    <p class="empty-msg" id="empty-list">Nothing logged yet.</p>
+                <div class="panel-header"><span class="panel-title">Spending by category</span></div>
+                <div id="empty-bar" class="empty-msg">Add an expense to see the summary.</div>
+                <div class="bar-wrap" id="bar-wrap" style="display:none;">
+                    <canvas id="bar-chart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- ── Bar chart ── -->
+        <!-- ── Expense log ── -->
         <div class="panel" style="margin-top:1.25rem;">
-            <div class="panel-header"><span class="panel-title">Spending by category</span></div>
-            <div id="empty-bar" class="empty-msg">Add an expense to see the summary.</div>
-            <div class="bar-wrap" id="bar-wrap" style="display:none;">
-                <canvas id="bar-chart"></canvas>
+            <div class="panel-header"><span class="panel-title">Expense log</span></div>
+            <div class="exp-list" id="exp-list">
+                <p class="empty-msg" id="empty-list">Nothing logged yet.</p>
             </div>
         </div>
 
         <!-- ── Sankey ── -->
         <div class="panel" style="margin-top:1.25rem;">
-            <div class="panel-header"><span class="panel-title">Money flow — account → payment method → category</span>
+            <div class="panel-header"><span class="panel-title">Money flow — Bank Account → Credit Card → Category</span>
             </div>
             <div id="empty-sankey" class="empty-msg">Add accounts and expenses to see the flow diagram.</div>
             <div id="sankey-wrap" style="display:none; width:100%;">
@@ -1584,9 +1938,24 @@
             Have feedback or ideas to make this better? <a href="mailto:vatsalgandhi93@gmail.com?subject=Expense%20Tracker%20Feedback">Drop me a note</a> — I'd love to hear your thoughts.
         </p>
 
+        <!-- ── Copyright ── -->
+        <div class="copyright-bar">
+            <span class="cr-line">
+                © 2026 <span class="cr-name">Vatsal Gandhi</span>. All rights reserved.
+            </span>
+            <span class="cr-line">
+                Free for personal, non-commercial use
+                <span class="cr-divider">·</span>
+                Redistribution, modification &amp; commercial use prohibited
+                <span class="cr-divider">·</span>
+                <a href="https://github.com/vatsalgandhi93/Expense-Tracker/blob/main/LICENSE.md" target="_blank" rel="noopener">View full license</a>
+            </span>
+        </div>
+
     </div><!-- /container -->
     <div class="sk-tip" id="sk-tip"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     <script>
@@ -1598,7 +1967,7 @@
             'Food & Dining': '#1D9E75',
             'Transportation': '#BA7517',
             'Childcare & Kids\' Expenses': '#FFA500',
-            'Personal Care, Fitness & Discretionary': '#D4537E',
+            'Lifestyle Spending':                     '#D4537E',
             'Healthcare & Insurance': '#D85A30',
             'Travel & Entertainment': '#7F77DD',
             'Savings & Investments': '#2ECC71',
@@ -1883,15 +2252,9 @@
 
             const W = svgEl.parentElement.clientWidth || 880;
 
-            /* ── 1. Collect nodes into 4 explicit tier buckets ── */
-            const T = [{}, {}, {}, {}];   // T[0]=banks, T[1]=CCs, T[2]=cats, T[3]=exps
-            // Each entry: key → { key, label, color, value }
-
-            // Link buckets — completely separate so no key collisions possible
-            const L01 = {};  // bank  → CC      "bId|cId"
-            const L02 = {};  // bank  → cat     "bId|cat"
-            const L12 = {};  // CC    → cat     "cId|cat"
-            const L23 = {};  // cat   → exp     always unique: "cat|expId"
+            /* ── 3-stage Sankey: Bank → CC → Category ── */
+            const T = [{}, {}, {}];          // T[0]=banks, T[1]=ccs, T[2]=cats
+            const L01 = {}, L02 = {}, L12 = {};
 
             const bump = (obj, k, label, color, v) => {
                 if (!obj[k]) obj[k] = { key: k, label, color, value: 0 };
@@ -1901,63 +2264,37 @@
 
             expenses.forEach(e => {
                 const catColor = CAT_COLORS[e.cat] || '#888780';
-                const trunc = e.name.length > 24 ? e.name.slice(0, 22) + '…' : e.name;
                 const type = accountType(e.accountId);
-
-                // Tier 2 — category (aggregated)
                 bump(T[2], 'cat|' + e.cat, e.cat, catColor, e.amount);
-
-                // Tier 3 — individual expense (always unique)
-                const expKey = 'exp|' + e.id;
-                T[3][expKey] = { key: expKey, label: trunc, color: catColor, value: e.amount };
-
-                // cat → exp link (unique per expense, never aggregated)
-                L23['cat|' + e.cat + '§' + expKey] = {
-                    sk: 'cat|' + e.cat, tk: expKey, value: e.amount
-                };
 
                 if (type === 'bank') {
                     const b = bankAccounts.find(a => a.id === e.accountId);
                     if (!b) return;
-                    const bk = 'bnk|' + b.id;
-                    bump(T[0], bk, b.name + (b.last4 ? ' ••' + b.last4 : ''), COLOR_BANK, e.amount);
-                    agg(L02, bk + '§' + 'cat|' + e.cat, e.amount);
+                    bump(T[0], 'bnk|' + b.id, b.name + (b.last4 ? ' ••' + b.last4 : ''), COLOR_BANK, e.amount);
+                    agg(L02, 'bnk|' + b.id + '§cat|' + e.cat, e.amount);
                 }
-
                 if (type === 'cc') {
                     const c = creditCards.find(x => x.id === e.accountId);
                     const b = c && bankAccounts.find(a => a.id === c.bankId);
                     if (!c || !b) return;
-                    const bk = 'bnk|' + b.id;
-                    const ck = 'cc|' + c.id;
-                    bump(T[0], bk, b.name + (b.last4 ? ' ••' + b.last4 : ''), COLOR_BANK, e.amount);
-                    bump(T[1], ck, c.name + (c.last4 ? ' ••' + c.last4 : ''), COLOR_CC, e.amount);
-                    agg(L01, bk + '§' + ck, e.amount);
-                    agg(L12, ck + '§' + 'cat|' + e.cat, e.amount);
+                    bump(T[0], 'bnk|' + b.id, b.name + (b.last4 ? ' ••' + b.last4 : ''), COLOR_BANK, e.amount);
+                    bump(T[1], 'cc|' + c.id, c.name + (c.last4 ? ' ••' + c.last4 : ''), COLOR_CC, e.amount);
+                    agg(L01, 'bnk|' + b.id + '§cc|' + c.id, e.amount);
+                    agg(L12, 'cc|' + c.id + '§cat|' + e.cat, e.amount);
                 }
             });
 
-            /* ── 2. Fixed column x positions ── */
-            const NW = 14;   // node bar width px
-            const VPAD = 8;    // vertical gap between nodes in same column
-            const HDR_H = 22;   // column header height
-            const ML = 46;
-            const MR = 225;  // right margin — space for expense labels
-            const MT = HDR_H + 10;
-            const MB = 16;
-
+            const NW = 14, VPAD = 8, HDR_H = 22;
+            const ML = 46, MR = 240, MT = HDR_H + 10, MB = 16;
             const innerW = W - ML - MR;
-            const COL_X = [ML, ML + innerW / 3, ML + 2 * innerW / 3, ML + innerW];
+            const TIER_NAMES = ['BANK ACCOUNT', 'CREDIT CARD', 'CATEGORY'];
+            const COL_X = [ML, ML + innerW / 2, ML + innerW];
 
-            /* ── 3. Compute scale and position all nodes ── */
             const nodeByKey = {};
-            const TIER_NAMES = ['BANK ACCOUNT', 'CREDIT CARD', 'CATEGORY', 'EXPENSES'];
-
             const maxInAnyCol = Math.max(...T.map(t => Object.keys(t).length), 1);
-            const H = Math.max(300, maxInAnyCol * 46 + (maxInAnyCol - 1) * VPAD + MT + MB);
+            const H = Math.min(600, Math.max(360, maxInAnyCol * 44 + (maxInAnyCol - 1) * VPAD + MT + MB));
             const innerH = H - MT - MB;
 
-            // Scale: min px-per-dollar across all non-empty tiers
             let scale = Infinity;
             T.forEach(tier => {
                 const nodes = Object.values(tier);
@@ -1967,33 +2304,20 @@
             });
             if (!isFinite(scale) || scale <= 0) scale = 1;
 
-            /* ── Sort each tier so items are ordered and neighbours stay close ──
-               Strategy:
-                 T[0] banks  — sort by value desc (no upstream)
-                 T[1] CCs    — sort by value desc (typically 1-2 items)
-                 T[2] cats   — sort by value desc; tie-break: prefer the order that
-                               puts a cat closer to whichever bank/CC feeds it most
-                 T[3] exps   — group by category, groups sorted by cat total desc,
-                               within group sort by value desc (keeps same-cat exps together)
-            */
+            const L01e = Object.entries(L01), L02e = Object.entries(L02), L12e = Object.entries(L12);
+            const upCatEntries = [...L02e, ...L12e];
 
-            // Helper: weighted upstream centroid for a node key in tier ci
-            // (used after tier ci-1 is already positioned)
             function upstreamCentroid(key, linkObjs) {
-                let weightedY = 0, totalW = 0;
+                let wy = 0, tw = 0;
                 linkObjs.forEach(([k, v]) => {
                     const [sk, tk] = k.split('§');
                     if (tk !== key) return;
-                    const sn = nodeByKey[sk];
-                    if (!sn) return;
-                    const mid = (sn.y0 + sn.y1) / 2;
-                    weightedY += mid * v;
-                    totalW += v;
+                    const sn = nodeByKey[sk]; if (!sn) return;
+                    wy += ((sn.y0 + sn.y1) / 2) * v; tw += v;
                 });
-                return totalW > 0 ? weightedY / totalW : Infinity;
+                return tw > 0 ? wy / tw : Infinity;
             }
 
-            // Position one tier's nodes (already sorted) into nodeByKey
             function placeTier(nodes, ci) {
                 const totalH = nodes.reduce((s, n) => s + Math.max(6, n.value * scale), 0)
                     + (nodes.length - 1) * VPAD;
@@ -2007,94 +2331,55 @@
                 });
             }
 
-            // T[0] — banks: pure value desc
-            const banks = Object.values(T[0]).sort((a, b) => b.value - a.value);
-            placeTier(banks, 0);
-
-            // T[1] — CCs: value desc (upstream centroid not useful until cats known)
-            const ccs = Object.values(T[1]).sort((a, b) => b.value - a.value);
-            placeTier(ccs, 1);
-
-            // T[2] — cats: value desc, then secondary sort by upstream centroid
-            //   centroid pulls each cat toward whichever bank/CC funds it most
-            const L01entries = Object.entries(L01);
-            const L02entries = Object.entries(L02);
-            const L12entries = Object.entries(L12);
-            const upstreamCatEntries = [...L02entries, ...L12entries];
-
+            placeTier(Object.values(T[0]).sort((a, b) => b.value - a.value), 0);
+            placeTier(Object.values(T[1]).sort((a, b) => b.value - a.value), 1);
             const cats = Object.values(T[2]).sort((a, b) => {
-                const vDiff = b.value - a.value;
-                if (Math.abs(vDiff) > 0.01) return vDiff;
-                return upstreamCentroid(a.key, upstreamCatEntries)
-                    - upstreamCentroid(b.key, upstreamCatEntries);
+                const vd = b.value - a.value;
+                if (Math.abs(vd) > 0.01) return vd;
+                return upstreamCentroid(a.key, upCatEntries) - upstreamCentroid(b.key, upCatEntries);
             });
             placeTier(cats, 2);
 
-            // T[3] — exps: group by category, order groups by cat node position (top-down),
-            //   within group sort by value desc — keeps all expenses of a category together
-            const catOrder = {};
-            cats.forEach((c, i) => { catOrder[c.key] = i; });
+            /* Build link ribbons — two-pass crossing-free */
+            const allLinks = [];
+            L01e.forEach(([k, v]) => { const [sk, tk] = k.split('§'); allLinks.push({ sk, tk, value: v }); });
+            L02e.forEach(([k, v]) => { const [sk, tk] = k.split('§'); allLinks.push({ sk, tk, value: v }); });
+            L12e.forEach(([k, v]) => { const [sk, tk] = k.split('§'); allLinks.push({ sk, tk, value: v }); });
 
-            const exps = Object.values(T[3]).sort((a, b) => {
-                const aCat = 'cat|' + a.color; // color alone isn't a safe key; use L23 to find cat
-                // Recover category key from L23
-                const aCatKey = Object.values(L23).find(l => l.tk === a.key)?.sk || '';
-                const bCatKey = Object.values(L23).find(l => l.tk === b.key)?.sk || '';
-                const catDiff = (catOrder[aCatKey] ?? 999) - (catOrder[bCatKey] ?? 999);
-                if (catDiff !== 0) return catDiff;
-                return b.value - a.value; // within same cat: value desc
+            const bySource = {}, byTarget = {};
+            allLinks.forEach(l => {
+                (bySource[l.sk] = bySource[l.sk] || []).push(l);
+                (byTarget[l.tk] = byTarget[l.tk] || []).push(l);
             });
-            placeTier(exps, 3);
-
-            /* ── 4. Build link ribbons with stacking cursors ── */
-            // Separate cursors per tier-pair so stacking is always clean
+            const midY = key => { const n = nodeByKey[key]; return n ? (n.y0 + n.y1) / 2 : 0; };
             const srcCur = {}, tgtCur = {};
             Object.values(nodeByKey).forEach(n => { srcCur[n.key] = 0; tgtCur[n.key] = 0; });
-
-            const ribbons = [];
-            function makeRibbon(skKey, tkKey, value) {
-                const sn = nodeByKey[skKey], tn = nodeByKey[tkKey];
-                if (!sn || !tn || value <= 0) return;
-                const lhs = sn.value > 0 ? (value / sn.value) * (sn.y1 - sn.y0) : 0;
-                const lht = tn.value > 0 ? (value / tn.value) * (tn.y1 - tn.y0) : 0;
-                const sy0 = sn.y0 + srcCur[skKey];
-                const ty0 = tn.y0 + tgtCur[tkKey];
-                srcCur[skKey] += lhs;
-                tgtCur[tkKey] += lht;
-                ribbons.push({
-                    sx1: sn.x1, sy0, sy1: sy0 + lhs,
-                    tx0: tn.x0, ty0, ty1: ty0 + lht,
-                    color: sn.color,
-                    tip: `${sn.label} → ${tn.label}: $${value.toFixed(2)}`
+            Object.entries(bySource).forEach(([sk, links]) => {
+                const sn = nodeByKey[sk]; if (!sn) return;
+                links.sort((a, b) => midY(a.tk) - midY(b.tk));
+                links.forEach(l => {
+                    const lhs = sn.value > 0 ? (l.value / sn.value) * (sn.y1 - sn.y0) : 0;
+                    l.sy0 = sn.y0 + srcCur[sk]; l.sy1 = l.sy0 + lhs; srcCur[sk] += lhs;
                 });
-            }
-
-            // Process in strict tier order, sorted to match node positions (top-down)
-            // This ensures ribbon stacking follows the same visual order as the nodes
-            const nodeY = key => nodeByKey[key] ? nodeByKey[key].y0 : 0;
-
-            const sortedL01 = Object.entries(L01).sort(([ka], [kb]) => {
-                const [ska, tka] = ka.split('§'), [skb, tkb] = kb.split('§');
-                return nodeY(ska) - nodeY(skb) || nodeY(tka) - nodeY(tkb);
             });
-            const sortedL02 = Object.entries(L02).sort(([ka], [kb]) => {
-                const [ska, tka] = ka.split('§'), [skb, tkb] = kb.split('§');
-                return nodeY(ska) - nodeY(skb) || nodeY(tka) - nodeY(tkb);
+            Object.entries(byTarget).forEach(([tk, links]) => {
+                const tn = nodeByKey[tk]; if (!tn) return;
+                links.sort((a, b) => midY(a.sk) - midY(b.sk));
+                links.forEach(l => {
+                    const lht = tn.value > 0 ? (l.value / tn.value) * (tn.y1 - tn.y0) : 0;
+                    l.ty0 = tn.y0 + tgtCur[tk]; l.ty1 = l.ty0 + lht; tgtCur[tk] += lht;
+                });
             });
-            const sortedL12 = Object.entries(L12).sort(([ka], [kb]) => {
-                const [ska, tka] = ka.split('§'), [skb, tkb] = kb.split('§');
-                return nodeY(ska) - nodeY(skb) || nodeY(tka) - nodeY(tkb);
-            });
-            const sortedL23 = Object.values(L23).sort((a, b) =>
-                nodeY(a.sk) - nodeY(b.sk) || nodeY(a.tk) - nodeY(b.tk)
-            );
 
-            sortedL01.forEach(([k, v]) => { const [sk, tk] = k.split('§'); makeRibbon(sk, tk, v); });
-            sortedL02.forEach(([k, v]) => { const [sk, tk] = k.split('§'); makeRibbon(sk, tk, v); });
-            sortedL12.forEach(([k, v]) => { const [sk, tk] = k.split('§'); makeRibbon(sk, tk, v); });
-            sortedL23.forEach(l => makeRibbon(l.sk, l.tk, l.value));
+            const ribbons = allLinks
+                .filter(l => l.value > 0 && nodeByKey[l.sk] && nodeByKey[l.tk])
+                .map(l => ({
+                    sx1: nodeByKey[l.sk].x1, sy0: l.sy0, sy1: l.sy1,
+                    tx0: nodeByKey[l.tk].x0, ty0: l.ty0, ty1: l.ty1,
+                    color: nodeByKey[l.sk].color,
+                    tip: `${nodeByKey[l.sk].label} → ${nodeByKey[l.tk].label}: $${l.value.toFixed(2)}`
+                }));
 
-            /* ── 5. Render ── */
             svgEl.setAttribute('height', H);
             svg.attr('viewBox', `0 0 ${W} ${H}`);
 
@@ -2109,60 +2394,56 @@
             };
             const hideTip = () => { tip.style.opacity = 0; };
 
-            // Column headers
             TIER_NAMES.forEach((name, i) => {
                 svg.append('text')
-                    .attr('x', COL_X[i] + NW / 2)
-                    .attr('y', 13)
-                    .attr('text-anchor', 'middle')
-                    .attr('font-size', 9)
-                    .attr('font-weight', '700')
-                    .attr('fill', subFill)
-                    .attr('font-family', 'system-ui,sans-serif')
-                    .text(name);
+                    .attr('x', COL_X[i] + NW / 2).attr('y', 13)
+                    .attr('text-anchor', 'middle').attr('font-size', 9)
+                    .attr('font-weight', '700').attr('fill', subFill)
+                    .attr('font-family', 'system-ui,sans-serif').text(name);
             });
 
-            // Ribbon paths
             ribbons.forEach(r => {
                 const mx = (r.sx1 + r.tx0) / 2;
                 const d =
                     `M${r.sx1},${r.sy0}C${mx},${r.sy0} ${mx},${r.ty0} ${r.tx0},${r.ty0}` +
                     `L${r.tx0},${r.ty1}C${mx},${r.ty1} ${mx},${r.sy1} ${r.sx1},${r.sy1}Z`;
-                svg.append('path')
-                    .attr('d', d).attr('fill', r.color).attr('opacity', 0.3)
-                    .on('mousemove', ev => showTip(ev, r.tip))
-                    .on('mouseleave', hideTip);
+                svg.append('path').attr('d', d).attr('fill', r.color).attr('opacity', 0.3)
+                    .on('mousemove', ev => showTip(ev, r.tip)).on('mouseleave', hideTip);
             });
 
-            // Node bars + labels
             Object.values(nodeByKey).forEach(n => {
                 svg.append('rect')
-                    .attr('x', n.x0).attr('y', n.y0)
-                    .attr('width', NW).attr('height', Math.max(4, n.y1 - n.y0))
-                    .attr('fill', n.color).attr('rx', 3)
+                    .attr('x', n.x0).attr('y', n.y0).attr('width', NW)
+                    .attr('height', Math.max(4, n.y1 - n.y0)).attr('fill', n.color).attr('rx', 3)
                     .on('mousemove', ev => showTip(ev, `${n.label}: $${n.value.toFixed(2)}`))
                     .on('mouseleave', hideTip);
 
-                const isExp = n.key.startsWith('exp|');
-                const isCat = n.key.startsWith('cat|');
                 const midY = (n.y0 + n.y1) / 2;
-                const xText = isCat ? n.x0 - 6 : n.x1 + 6;
-                const anchor = isCat ? 'end' : 'start';
+                const xText = n.x1 + 6;        // all labels render to the RIGHT
+                const nodeH = n.y1 - n.y0;
+                const useStacked = nodeH >= 28; // two-line only if node is tall enough
 
-                svg.append('text')
-                    .attr('x', xText).attr('y', midY + (isExp ? 0 : -6))
-                    .attr('dy', '0.35em').attr('text-anchor', anchor)
-                    .attr('font-size', isExp ? 11 : 12)
-                    .attr('font-weight', isExp ? '400' : '600')
-                    .attr('fill', textFill).attr('font-family', 'system-ui,sans-serif')
-                    .text(n.label);
+                if (useStacked) {
+                    // Two lines: name above, amount below (with safe 16px gap)
+                    svg.append('text')
+                        .attr('x', xText).attr('y', midY - 8).attr('dy', '0.35em')
+                        .attr('text-anchor', 'start').attr('font-size', 12).attr('font-weight', '600')
+                        .attr('fill', textFill).attr('font-family', 'system-ui,sans-serif').text(n.label);
 
-                if (!isExp) {
                     svg.append('text')
                         .attr('x', xText).attr('y', midY + 8).attr('dy', '0.35em')
-                        .attr('text-anchor', anchor).attr('font-size', 10)
+                        .attr('text-anchor', 'start').attr('font-size', 10)
                         .attr('fill', subFill).attr('font-family', 'system-ui,sans-serif')
                         .text('$' + n.value.toFixed(2));
+                } else {
+                    // Single line: name and amount inline — name in primary color, $ in secondary
+                    const g = svg.append('text')
+                        .attr('x', xText).attr('y', midY).attr('dy', '0.35em')
+                        .attr('text-anchor', 'start').attr('font-size', 12).attr('font-weight', '600')
+                        .attr('font-family', 'system-ui,sans-serif');
+                    g.append('tspan').attr('fill', textFill).text(n.label);
+                    g.append('tspan').attr('fill', subFill).attr('font-weight', '400').attr('font-size', 11)
+                        .text('  $' + n.value.toFixed(2));
                 }
             });
         }
@@ -2307,6 +2588,521 @@
         /* ── Init ── */
         renderAccountChips();
         update();
+
+        /* ═══════════════════════════════════════════════════════════
+           IMPORT STATEMENT — Credit Card + Bank, no external API
+        ═══════════════════════════════════════════════════════════ */
+
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        /* ── Keyword → Category dictionary ── */
+        const KEYWORD_MAP = [
+            { cat: 'Housing & Utilities', words: ['mortgage','rent payment','hoa','lease','electric','electricity','gas company','utility','utilities','water bill','internet','comcast','xfinity','verizon fios','at&t internet','spectrum','cox comm','pseg','pge','conedison','con ed','duke energy','national grid','direct energy'] },
+            { cat: 'Food & Dining', words: ['wholefds','whole foods','trader joe','instacart','kroger','safeway','publix','wegmans','aldi','costco food','doordash','grubhub','uber eats','ubereats','postmates','seamless','chipotle','mcdonald','burger king','wendy','taco bell','chick-fil','subway','domino','pizza hut','panera','starbucks','dunkin','dunkin donuts','coffee','restaurant','dining','diner','bistro','cafe','sushi','ramen','tacos','grill','kitchen','eatery','deli','bakery','pret a manger','cheesecake factory','olive garden','applebee','ihop','waffle house'] },
+            { cat: 'Transportation', words: ['uber','lyft','taxi','shell','exxon','bp gas','chevron','mobil','sunoco','arco','speedway','wawa gas','racetrac','kwik trip','casey','circle k gas','gas station','fuel','toll','ezpass','e-zpass','fastrak','metro card','metrocard','mbta','bart','mta','transit','amtrak','greyhound','hertz','enterprise rent','avis','budget car','zipcar','parking','park mobile','parkmobile','auto repair','jiffy lube','midas','firestone','goodyear','car wash','dmv','vehicle','auto insurance','geico','progressive','state farm auto'] },
+            { cat: "Childcare & Kids' Expenses", words: ['daycare','day care','childcare','preschool','kindergarten','tuition','school fee','after school','babysit','nanny','learning','montessori','bright horizons','kinder care','la petite','children','pediatric','toys r us','gymboree',"children's place",'carter','old navy kids','gap kids'] },
+            { cat: 'Lifestyle Spending', words: ['gym','fitness','planet fitness','la fitness','equinox','orange theory','orangetheory','crossfit','ymca','yoga','pilates','spa','salon','haircut','barber','nail','massage','sephora','ulta','beauty','skincare','cvs beauty','walgreen beauty','personal care','amazon salon'] },
+            { cat: 'Healthcare & Insurance', words: ['cvs','walgreen','rite aid','duane reade','pharmacy','rx','prescription','doctor','physician','hospital','clinic','urgent care','emergency','medical','dental','dentist','orthodont','optician','vision','eye care','health insurance','blue cross','aetna','cigna','humana','united health','anthem','kaiser','labcorp','quest diag','radiology','therapy','therapist','mental health','counseling'] },
+            { cat: 'Travel & Entertainment', words: ['netflix','spotify','hulu','disney+','disneyplus','apple tv','hbo','paramount','peacock','amazon prime video','youtube premium','twitch','audible','kindle','steam','playstation','xbox','nintendo','ticketmaster','eventbrite','concert','theater','theatre','cinema','amc theaters','regal','movie','museum','zoo','aquarium','hotel','marriott','hilton','hyatt','ihg','airbnb','vrbo','expedia','booking.com','priceline','kayak','delta','united airlines','american airlines','southwest','jetblue','spirit','frontier','alaska air','flight','airline','cruise','carnival','royal caribbean','resort','vacation'] },
+            { cat: 'Savings & Investments', words: ['transfer to savings','savings deposit','investment','fidelity','vanguard','charles schwab','etrade','robinhood','coinbase','wealthfront','betterment','acorns','ira','401k','brokerage','stock','mutual fund'] },
+            { cat: 'Miscellaneous', words: ['atm withdrawal','cash','wire transfer','zelle','venmo','paypal','cashapp','cash app','check','money order','fee','service charge','annual fee','late fee','interest charge','finance charge','amazon','amazon.com','amzn','walmart','target','best buy','costco','sams club',"sam's club",'home depot','lowes',"lowe's",'ikea','bed bath','kohls',"kohl's",'macy','nordstrom','tj maxx','tjmaxx','marshalls','ross stores','old navy','gap','h&m','zara','nike','adidas','etsy','ebay','wayfair','chewy','petco','petsmart','apple store','apple.com','staples','office depot'] }
+        ];
+
+        function categorise(d) {
+            const s = d.toLowerCase();
+            for (const e of KEYWORD_MAP) for (const w of e.words) if (s.includes(w)) return e.cat;
+            return 'Miscellaneous';
+        }
+
+        /* ── Date detection ── */
+        const DATE_PAT = [
+            /^\d{1,2}\/\d{1,2}(\/\d{2,4})?/,
+            /^[A-Z][a-z]{2}\.?\s+\d{1,2}(,?\s+\d{4})?/i,
+            /^\d{4}-\d{2}-\d{2}/,
+            /^\d{1,2}-\d{1,2}(-\d{2,4})?/
+        ];
+
+        /* ── Skip noise lines ── */
+        const SKIP_WORDS = [
+            'payment thank you','previous balance','minimum due','credit limit',
+            'account number','statement date','opening balance','closing balance',
+            'beginning balance','ending balance','new balance','total fees',
+            'amount due','account summary','transactions','rewards','cash back',
+            'total debits','total credits','page ','continued','available credit',
+            'current balance','available balance'
+        ];
+
+        /* ── Income detection for bank statements ── */
+        const INCOME_HINTS = [
+            'direct deposit','payroll','salary','ach credit','ach deposit',
+            'mobile deposit','check deposit','deposit -','refund','rebate',
+            'cashback','interest paid','dividend','tax refund','zelle from',
+            'venmo from','transfer from'
+        ];
+
+        function isLikelyIncome(desc) {
+            const s = desc.toLowerCase();
+            return INCOME_HINTS.some(h => s.includes(h));
+        }
+
+        /* ──────────────────────────────────────────
+           Parse — Credit Card Statement
+           Every transaction line = a charge.
+           Strategy: first positive dollar amount on line = charge.
+        ─────────────────────────────────────────── */
+        function parseCC(rawText) {
+            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 4);
+            const txns = [];
+            const seen = new Set();
+
+            for (const line of lines) {
+                const lower = line.toLowerCase();
+                if (SKIP_WORDS.some(w => lower.includes(w))) continue;
+                if (!DATE_PAT.some(p => p.test(line))) continue;
+
+                const amounts = [...line.matchAll(/-?\$?([\d,]+\.\d{2})/g)];
+                if (!amounts.length) continue;
+
+                let amount = null, amountStr = '';
+                for (const m of amounts) {
+                    const v = parseFloat(m[1].replace(/,/g,''));
+                    if (v > 0 && v <= 25000) { amount = v; amountStr = m[0]; break; }
+                }
+                if (!amount) continue;
+
+                let dateStr = '';
+                for (const p of DATE_PAT) { const dm = line.match(p); if (dm) { dateStr = dm[0]; break; } }
+
+                let desc = line
+                    .replace(dateStr, '')
+                    .replace(amountStr, '')
+                    .replace(/-?\$?[\d,]+\.\d{2}/g, '')
+                    .replace(/\s{2,}/g, ' ').trim();
+
+                if (desc.length < 3 || /^\d+$/.test(desc)) continue;
+
+                const key = `${dateStr}|${desc.slice(0,20)}|${amount}`;
+                if (seen.has(key)) continue;
+                seen.add(key);
+
+                txns.push({
+                    date: dateStr.trim(),
+                    description: desc,
+                    amount,
+                    category: categorise(desc),
+                    type: 'debit',
+                    include: true
+                });
+            }
+            return txns;
+        }
+
+        /* ──────────────────────────────────────────
+           Parse — Bank Statement
+           Distinguishes debits (expenses) from credits (income).
+           Strategy: bank statements typically have either:
+             (a) Description text with explicit "withdrawal" / "deposit" / "ACH credit" markers
+             (b) Two amount columns (debit | credit) — we detect by checking position
+             (c) A single amount with a +/- sign or with running balance after
+           If the line has 2+ amounts, the FIRST is treated as the transaction
+           and the LAST as the running balance.
+        ─────────────────────────────────────────── */
+        function parseBank(rawText, includeCredits) {
+            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 4);
+            const txns = [];
+            const seen = new Set();
+
+            for (const line of lines) {
+                const lower = line.toLowerCase();
+                if (SKIP_WORDS.some(w => lower.includes(w))) continue;
+                if (!DATE_PAT.some(p => p.test(line))) continue;
+
+                const amounts = [...line.matchAll(/-?\$?([\d,]+\.\d{2})/g)];
+                if (!amounts.length) continue;
+
+                // First amount = transaction. If there's only 1, that's the txn.
+                const firstAmt = amounts[0];
+                const amount = parseFloat(firstAmt[1].replace(/,/g,''));
+                if (amount <= 0 || amount > 100000) continue;
+
+                let dateStr = '';
+                for (const p of DATE_PAT) { const dm = line.match(p); if (dm) { dateStr = dm[0]; break; } }
+
+                let desc = line
+                    .replace(dateStr, '')
+                    .replace(/-?\$?[\d,]+\.\d{2}/g, '')
+                    .replace(/\s{2,}/g, ' ').trim();
+
+                if (desc.length < 3 || /^\d+$/.test(desc)) continue;
+
+                // Determine if this is a credit (income) or debit (expense)
+                // Heuristic: explicit income keywords OR explicit minus sign on the amount
+                const incomeHint = isLikelyIncome(desc);
+                const isCredit = incomeHint;
+
+                if (isCredit && !includeCredits) continue;
+
+                const key = `${dateStr}|${desc.slice(0,20)}|${amount}`;
+                if (seen.has(key)) continue;
+                seen.add(key);
+
+                txns.push({
+                    date: dateStr.trim(),
+                    description: desc,
+                    amount,
+                    category: isCredit ? 'Savings & Investments' : categorise(desc),
+                    type: isCredit ? 'credit' : 'debit',
+                    include: !isCredit  // pre-uncheck credits by default
+                });
+            }
+            return txns;
+        }
+
+        async function extractTextFromPDF(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = '';
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const tc = await page.getTextContent();
+                const rows = [];
+                for (const item of tc.items) {
+                    if (!item.str.trim()) continue;
+                    const y = Math.round(item.transform[5]);
+                    const x = item.transform[4];
+                    let row = rows.find(r => Math.abs(r.y - y) <= 3);
+                    if (!row) { row = { y, items: [] }; rows.push(row); }
+                    row.items.push({ x, text: item.str });
+                }
+                rows.sort((a, b) => b.y - a.y);
+                for (const row of rows) {
+                    row.items.sort((a, b) => a.x - b.x);
+                    fullText += row.items.map(i => i.text).join('  ') + '\n';
+                }
+                fullText += '\n';
+            }
+            return fullText;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           UI Flow
+        ═══════════════════════════════════════════════════════════ */
+        let importType = null; // 'cc' or 'bank'
+        let parsedTxns = [];
+
+        const importModal   = $('import-modal');
+        const accountStep   = $('account-step');
+        const acctLabelEl   = $('account-label');
+        const accountSel    = $('import-account-sel');
+        const newAccBox     = $('new-account-box');
+        const newAccHint    = $('new-account-hint');
+        const bankOptions   = $('bank-options');
+        const uploadStep    = $('upload-step');
+        const uploadZone    = $('upload-zone');
+        const fileInput     = $('pdf-file-input');
+        const parseStatus   = $('parse-status');
+        const parseIcon     = $('parse-icon');
+        const parseMsg      = $('parse-msg');
+        const reviewSection = $('review-section');
+        const reviewTbody   = $('review-tbody');
+        const reviewStats   = $('review-stats');
+        const confirmBtn    = $('confirm-import-btn');
+        const confirmLabel  = $('confirm-label');
+        const checkAll      = $('check-all');
+
+        function openImportModal() {
+            resetImportModal();
+            importModal.classList.add('open');
+        }
+
+        function closeImportModal() {
+            importModal.classList.remove('open');
+            resetImportModal();
+        }
+
+        function resetImportModal() {
+            importType = null;
+            parsedTxns = [];
+            $('type-cc').classList.remove('active');
+            $('type-bank').classList.remove('active');
+            accountStep.style.display = 'none';
+            bankOptions.classList.remove('visible');
+            uploadStep.style.display = 'none';
+            parseStatus.className = 'parse-status';
+            reviewSection.classList.remove('visible');
+            reviewTbody.innerHTML = '';
+            fileInput.value = '';
+            newAccBox.style.display = 'none';
+            $('new-acc-name').value = '';
+            $('new-acc-last4').value = '';
+            $('new-acc-err').style.display = 'none';
+            $('raw-text-wrap').style.display = 'none';
+            $('show-raw-btn').textContent = '🔍 Show raw text';
+        }
+
+        function selectType(type) {
+            importType = type;
+            $('type-cc').classList.toggle('active', type === 'cc');
+            $('type-bank').classList.toggle('active', type === 'bank');
+
+            accountStep.style.display = 'block';
+            uploadStep.style.display = 'block';
+
+            // Populate account selector
+            accountSel.innerHTML = '<option value="">— select —</option>';
+            if (type === 'cc') {
+                acctLabelEl.textContent = '2. Which credit card is this statement for?';
+                creditCards.forEach(c => {
+                    const o = document.createElement('option');
+                    o.value = c.id;
+                    o.textContent = c.name + (c.last4 ? ' ••' + c.last4 : '');
+                    accountSel.appendChild(o);
+                });
+                const newOpt = document.createElement('option');
+                newOpt.value = '__new__';
+                newOpt.textContent = '+ Add a new credit card…';
+                accountSel.appendChild(newOpt);
+                bankOptions.classList.remove('visible');
+                newAccHint.textContent = 'Enter the new card details — it will be added to your accounts.';
+                $('new-acc-bank').parentElement.querySelector('#new-acc-bank').style.display = 'block';
+            } else {
+                acctLabelEl.textContent = '2. Which bank account is this statement for?';
+                bankAccounts.forEach(b => {
+                    const o = document.createElement('option');
+                    o.value = b.id;
+                    o.textContent = b.name + (b.last4 ? ' ••' + b.last4 : '');
+                    accountSel.appendChild(o);
+                });
+                const newOpt = document.createElement('option');
+                newOpt.value = '__new__';
+                newOpt.textContent = '+ Add a new bank account…';
+                accountSel.appendChild(newOpt);
+                bankOptions.classList.add('visible');
+                newAccHint.textContent = 'Enter the new bank account details.';
+            }
+
+            accountSel.onchange = () => {
+                if (accountSel.value === '__new__') {
+                    newAccBox.style.display = 'block';
+                    // For bank type, hide the "paid from" dropdown
+                    $('new-acc-bank').style.display = (importType === 'bank') ? 'none' : 'block';
+                    if (importType === 'cc') {
+                        // populate bank dropdown
+                        const bsel = $('new-acc-bank');
+                        bsel.innerHTML = '<option value="">— paid from bank account —</option>';
+                        bankAccounts.forEach(b => {
+                            const o = document.createElement('option');
+                            o.value = b.id;
+                            o.textContent = b.name + (b.last4 ? ' ••' + b.last4 : '');
+                            bsel.appendChild(o);
+                        });
+                    }
+                } else {
+                    newAccBox.style.display = 'none';
+                }
+            };
+        }
+
+        $('type-cc').addEventListener('click', () => selectType('cc'));
+        $('type-bank').addEventListener('click', () => selectType('bank'));
+
+        $('import-btn').addEventListener('click', openImportModal);
+        $('import-close').addEventListener('click', closeImportModal);
+        importModal.addEventListener('click', e => { if (e.target === importModal) closeImportModal(); });
+
+        // Upload handlers
+        uploadZone.addEventListener('click', () => {
+            if (!importType) { alert('Please select a statement type first.'); return; }
+            fileInput.click();
+        });
+        fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+        uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+        uploadZone.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (!importType) { alert('Please select a statement type first.'); return; }
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        });
+
+        function setStatus(type, msg) {
+            parseStatus.className = 'parse-status visible ' + type;
+            parseIcon.className = type === 'loading' ? 'ti ti-loader-2'
+                : type === 'error' ? 'ti ti-alert-circle' : 'ti ti-circle-check';
+            parseMsg.textContent = msg;
+        }
+
+        async function handleFile(file) {
+            if (!file || file.type !== 'application/pdf') {
+                setStatus('error', 'Please upload a valid PDF file.');
+                return;
+            }
+            if (typeof pdfjsLib === 'undefined') {
+                setStatus('error', 'PDF library not loaded. Check your internet connection.');
+                return;
+            }
+            reviewSection.classList.remove('visible');
+            $('raw-text-wrap').style.display = 'none';
+            setStatus('loading', 'Reading PDF…');
+
+            try {
+                const text = await extractTextFromPDF(file);
+                $('raw-text-view').value = text;
+
+                setStatus('loading', 'Identifying transactions…');
+
+                if (importType === 'cc') {
+                    parsedTxns = parseCC(text);
+                } else {
+                    const includeCredits = $('include-credits').checked;
+                    parsedTxns = parseBank(text, includeCredits);
+                }
+
+                if (parsedTxns.length === 0) {
+                    setStatus('error', 'No transactions found. Click "Show raw text" to see what was extracted — if the text looks empty or garbled, the PDF is image-based.');
+                    $('raw-text-wrap').style.display = 'block';
+                    reviewSection.classList.add('visible');
+                    return;
+                }
+
+                const debits  = parsedTxns.filter(t => t.type === 'debit').length;
+                const credits = parsedTxns.filter(t => t.type === 'credit').length;
+                let summary = `Found ${debits} debit${debits !== 1 ? 's' : ''}`;
+                if (credits > 0) summary += ` and ${credits} credit${credits !== 1 ? 's' : ''}`;
+                setStatus('success', summary + ' — review and confirm below.');
+                renderReviewTable();
+                reviewSection.classList.add('visible');
+
+            } catch (err) {
+                setStatus('error', 'Could not parse this PDF. It may be password-protected or image-based.');
+                console.error(err);
+            }
+        }
+
+        function renderReviewTable() {
+            reviewTbody.innerHTML = '';
+            const cats = Object.keys(CAT_COLORS);
+
+            parsedTxns.forEach((tx, i) => {
+                const tr = document.createElement('tr');
+                tr.className = tx.include ? '' : 'excluded';
+                const credBadge = tx.type === 'credit'
+                    ? '<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(29,158,117,.15);color:#1D9E75;margin-left:5px;">CREDIT</span>'
+                    : '';
+                tr.innerHTML = `
+                    <td class="td-check">
+                        <input type="checkbox" data-idx="${i}" ${tx.include ? 'checked' : ''}/>
+                    </td>
+                    <td style="white-space:nowrap; color:var(--text-secondary);">${tx.date}</td>
+                    <td title="${tx.description}" style="max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${tx.description}${credBadge}</td>
+                    <td>
+                        <select class="cat-sel" data-idx="${i}">
+                            ${cats.map(c => `<option value="${c}" ${c === tx.category ? 'selected' : ''}>${c}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td class="td-amt" style="${tx.type === 'credit' ? 'color:#1D9E75;' : ''}">${tx.type === 'credit' ? '+' : ''}$${tx.amount.toFixed(2)}</td>
+                `;
+                reviewTbody.appendChild(tr);
+            });
+
+            reviewTbody.querySelectorAll('input[type=checkbox]').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const idx = parseInt(cb.dataset.idx);
+                    parsedTxns[idx].include = cb.checked;
+                    cb.closest('tr').className = cb.checked ? '' : 'excluded';
+                    refreshConfirmBtn();
+                });
+            });
+            reviewTbody.querySelectorAll('select.cat-sel').forEach(sel => {
+                sel.addEventListener('change', () => {
+                    parsedTxns[parseInt(sel.dataset.idx)].category = sel.value;
+                });
+            });
+            refreshConfirmBtn();
+        }
+
+        function refreshConfirmBtn() {
+            const inc = parsedTxns.filter(t => t.include);
+            const total = inc.reduce((s, t) => s + t.amount, 0);
+            confirmLabel.textContent = `Add ${inc.length} item${inc.length !== 1 ? 's' : ''} ($${total.toFixed(2)})`;
+            confirmBtn.disabled = inc.length === 0;
+            reviewStats.innerHTML = `<strong>${inc.length}</strong> of <strong>${parsedTxns.length}</strong> selected`;
+        }
+
+        checkAll.addEventListener('change', () => {
+            parsedTxns.forEach(t => t.include = checkAll.checked);
+            renderReviewTable();
+        });
+        $('sel-all-btn').addEventListener('click', () => {
+            const anyOn = parsedTxns.some(t => t.include);
+            parsedTxns.forEach(t => t.include = !anyOn);
+            checkAll.checked = !anyOn;
+            renderReviewTable();
+        });
+
+        $('show-raw-btn').addEventListener('click', () => {
+            const wrap = $('raw-text-wrap');
+            const showing = wrap.style.display !== 'none';
+            wrap.style.display = showing ? 'none' : 'block';
+            $('show-raw-btn').textContent = showing ? '🔍 Show raw text' : '🔍 Hide raw text';
+        });
+
+        confirmBtn.addEventListener('click', () => {
+            let accountId = parseInt(accountSel.value);
+            const isNew = accountSel.value === '__new__';
+
+            if (isNew) {
+                const name = $('new-acc-name').value.trim();
+                const last4 = $('new-acc-last4').value.trim().replace(/\D/g,'').slice(-4);
+                const bankId = parseInt($('new-acc-bank').value);
+                const err = $('new-acc-err');
+
+                if (!name) { err.style.display = 'block'; return; }
+                if (importType === 'cc' && !bankId) { err.style.display = 'block'; return; }
+                err.style.display = 'none';
+
+                if (importType === 'cc') {
+                    const card = { id: uid(), name, last4, bankId };
+                    creditCards.push(card);
+                    accountId = card.id;
+                } else {
+                    const bank = { id: uid(), name, last4 };
+                    bankAccounts.push(bank);
+                    accountId = bank.id;
+                }
+                renderAccountChips();
+            }
+
+            if (!accountId || isNaN(accountId)) {
+                alert('Please select or add an account.');
+                return;
+            }
+
+            const toAdd = parsedTxns.filter(t => t.include && t.type === 'debit');
+            toAdd.forEach(tx => {
+                expenses.push({
+                    id: uid(),
+                    name: tx.description.length > 40 ? tx.description.slice(0, 38) + '…' : tx.description,
+                    amount: tx.amount,
+                    cat: tx.category,
+                    accountId
+                });
+            });
+
+            // Credits handling: add to income input if any selected
+            const credits = parsedTxns.filter(t => t.include && t.type === 'credit');
+            if (credits.length > 0) {
+                const creditTotal = credits.reduce((s, t) => s + t.amount, 0);
+                const currentIncome = parseFloat($('income-input').value) || 0;
+                $('income-input').value = (currentIncome + creditTotal).toFixed(2);
+            }
+
+            update();
+            closeImportModal();
+        });
     </script>
 </body>
 
