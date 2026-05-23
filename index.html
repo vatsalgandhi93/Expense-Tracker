@@ -1599,6 +1599,31 @@
                 </div>
 
                 <div class="modal-section">
+                    <h3><i class="ti ti-file-import" style="margin-right:5px;" aria-hidden="true"></i>Importing
+                        statements</h3>
+                    <div class="sankey-explainer">
+                        <p class="sf-desc" style="margin-bottom:8px;">
+                            Skip manual entry — upload a PDF statement and the parser auto-categorises every
+                            transaction.
+                        </p>
+                        <ol style="font-size:12px; color:var(--text-secondary); line-height:1.7; padding-left:18px; margin:8px 0 0;">
+                            <li>Click <strong style="color:var(--text-primary);">Import Statement</strong> in the header
+                            </li>
+                            <li>Choose <strong style="color:#9333EA;">Credit Card</strong> or
+                                <strong style="color:#2563EB;">Bank Account</strong>
+                            </li>
+                            <li>Pick the account (or add a new one inline)</li>
+                            <li>For bank statements: toggle whether deposits should be added as income</li>
+                            <li>Drop in the PDF — transactions appear with auto-assigned categories</li>
+                            <li>Review, edit categories, uncheck anything to skip, then confirm</li>
+                        </ol>
+                        <p class="sf-desc" style="margin-top:10px;">
+                            Everything happens locally in your browser — the file is never uploaded anywhere.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-section">
                     <h3><i class="ti ti-chart-dots" style="margin-right:5px;" aria-hidden="true"></i>The charts</h3>
                     <div class="chart-grid">
                         <div class="chart-card">
@@ -1630,14 +1655,17 @@
                             <span class="sf-node"
                                 style="background:rgba(55,138,221,.12); color:#378ADD;">Category</span>
                         </div>
-                        <p class="sf-desc">Every ribbon in the diagram represents money flowing between stages. The
+                        <p class="sf-desc">Every ribbon represents money flowing between stages. The
                             <strong>wider the ribbon</strong>, the more money moved that way. Bank-direct expenses skip
-                            the credit card column entirely, showing a long ribbon straight to their category. Hover any
-                            node or ribbon for the exact dollar amount.
+                            the credit card column entirely. Hover any node or ribbon for exact dollar amounts.
                         </p>
-                        <p class="sf-desc" style="margin-top:6px;">If you only use bank accounts with no credit cards,
-                            you'll see a 2-column flow from bank straight to category. Add a credit card and the middle
-                            column appears automatically.</p>
+                        <p class="sf-desc" style="margin-top:8px; padding:10px 12px;
+                            background: linear-gradient(135deg, rgba(55,138,221,.08) 0%, rgba(147,51,234,.08) 100%);
+                            border-left: 3px solid #378ADD; border-radius: var(--radius-md); color: var(--text-primary);">
+                            <strong>💡 Drill down:</strong> click any category node to expand it into a per-merchant
+                            view. You'll see each store with the number of transactions (e.g. "Starbucks 3×")
+                            grouped together. Use "Back to overview" to return.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1868,6 +1896,7 @@
                     <label for="exp-cat">Category</label>
                     <select id="exp-cat">
                         <option value="Housing & Utilities">Housing &amp; Utilities</option>
+                        <option value="Household Essentials & Supplies">Household Essentials &amp; Supplies</option>
                         <option value="Food & Dining">Food &amp; Dining</option>
                         <option value="Transportation">Transportation</option>
                         <option value="Childcare & Kids' Expenses">Childcare &amp; Kids' Expenses</option>
@@ -1914,21 +1943,44 @@
             </div>
         </div>
 
+        <!-- ── Sankey ── -->
+        <div class="panel" style="margin-top:1.25rem;">
+            <div class="panel-header" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                <span class="panel-title" id="sankey-title">Money flow — Bank Account → Credit Card → Category</span>
+                <button id="sankey-back-btn" style="display:none; background:none; border:0.5px solid var(--border-med);
+                    border-radius:var(--radius-md); padding:4px 10px; font-size:12px; color:var(--text-secondary);
+                    cursor:pointer; display:none; align-items:center; gap:5px; font-family:var(--font-sans);
+                    transition:background .15s, color .15s;">
+                    <i class="ti ti-arrow-left" aria-hidden="true"></i> Back to overview
+                </button>
+            </div>
+            <div id="sankey-hint" style="display:none;
+                background: linear-gradient(135deg, rgba(55,138,221,.08) 0%, rgba(147,51,234,.08) 100%);
+                border: 0.5px solid rgba(55,138,221,.25);
+                border-left: 3px solid #378ADD;
+                border-radius: var(--radius-md);
+                padding: 10px 14px;
+                margin-bottom: 12px;
+                font-size: 13px;
+                color: var(--text-primary);
+                display: none;
+                align-items: center;
+                gap: 8px;
+                font-weight: 500;">
+                <i class="ti ti-hand-finger" aria-hidden="true" style="font-size:18px; color:#378ADD; flex-shrink:0;"></i>
+                <span><strong>Tip:</strong> Click any category node to drill down and see spending by individual merchant.</span>
+            </div>
+            <div id="empty-sankey" class="empty-msg">Add accounts and expenses to see the flow diagram.</div>
+            <div id="sankey-wrap" style="display:none; width:100%;">
+                <svg id="sankey-svg" style="width:100%; display:block;"></svg>
+            </div>
+        </div>
+
         <!-- ── Expense log ── -->
         <div class="panel" style="margin-top:1.25rem;">
             <div class="panel-header"><span class="panel-title">Expense log</span></div>
             <div class="exp-list" id="exp-list">
                 <p class="empty-msg" id="empty-list">Nothing logged yet.</p>
-            </div>
-        </div>
-
-        <!-- ── Sankey ── -->
-        <div class="panel" style="margin-top:1.25rem;">
-            <div class="panel-header"><span class="panel-title">Money flow — Bank Account → Credit Card → Category</span>
-            </div>
-            <div id="empty-sankey" class="empty-msg">Add accounts and expenses to see the flow diagram.</div>
-            <div id="sankey-wrap" style="display:none; width:100%;">
-                <svg id="sankey-svg" style="width:100%; display:block;"></svg>
             </div>
         </div>
 
@@ -1964,10 +2016,11 @@
         ═══════════════════════════════════════════ */
         const CAT_COLORS = {
             'Housing & Utilities': '#378ADD',
+            'Household Essentials & Supplies': '#A8B86C',
             'Food & Dining': '#1D9E75',
             'Transportation': '#BA7517',
-            'Childcare & Kids\' Expenses': '#FFA500',
-            'Lifestyle Spending':                     '#D4537E',
+            "Childcare & Kids' Expenses": '#FFA500',
+            'Lifestyle Spending': '#D4537E',
             'Healthcare & Insurance': '#D85A30',
             'Travel & Entertainment': '#7F77DD',
             'Savings & Investments': '#2ECC71',
@@ -2244,7 +2297,35 @@
            Tier 2: Categories
            Tier 3: Individual expenses
         ═══════════════════════════════════════════ */
+        /* Sankey drill-down state */
+        let sankeyDrillCat = null;   // null = overview, or category name string
+
         function buildSankey() {
+            // Dispatcher: pick overview or drill-down based on state
+            if (sankeyDrillCat) {
+                buildSankeyDrill(sankeyDrillCat);
+            } else {
+                buildSankeyOverview();
+            }
+            updateSankeyHeader();
+        }
+
+        function updateSankeyHeader() {
+            const titleEl = $('sankey-title');
+            const backBtn = $('sankey-back-btn');
+            const hint = $('sankey-hint');
+            if (sankeyDrillCat) {
+                titleEl.innerHTML = `Drill-down — <span style="color:${CAT_COLORS[sankeyDrillCat]||'#888'};font-weight:700;">${sankeyDrillCat}</span> by merchant`;
+                backBtn.style.display = 'inline-flex';
+                hint.style.display = 'none';
+            } else {
+                titleEl.textContent = 'Money flow — Bank Account → Credit Card → Category';
+                backBtn.style.display = 'none';
+                hint.style.display = expenses.length > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function buildSankeyOverview() {
             const svgEl = $('sankey-svg');
             const svg = d3.select(svgEl);
             svg.selectAll('*').remove();
@@ -2412,11 +2493,23 @@
             });
 
             Object.values(nodeByKey).forEach(n => {
-                svg.append('rect')
+                const isCatNode = n.key.startsWith('cat|');
+                const rect = svg.append('rect')
                     .attr('x', n.x0).attr('y', n.y0).attr('width', NW)
                     .attr('height', Math.max(4, n.y1 - n.y0)).attr('fill', n.color).attr('rx', 3)
-                    .on('mousemove', ev => showTip(ev, `${n.label}: $${n.value.toFixed(2)}`))
+                    .on('mousemove', ev => showTip(ev,
+                        isCatNode ? `${n.label}: $${n.value.toFixed(2)} — click to drill down`
+                                  : `${n.label}: $${n.value.toFixed(2)}`))
                     .on('mouseleave', hideTip);
+
+                if (isCatNode) {
+                    rect.style('cursor', 'pointer')
+                        .on('click', () => {
+                            hideTip();                                   // dismiss tooltip immediately
+                            sankeyDrillCat = n.key.slice(4);             // strip "cat|" prefix
+                            buildSankey();
+                        });
+                }
 
                 const midY = (n.y0 + n.y1) / 2;
                 const xText = n.x1 + 6;        // all labels render to the RIGHT
@@ -2447,6 +2540,254 @@
                 }
             });
         }
+
+        /* ════════════════════════════════════════════
+           Sankey drill-down view — by merchant
+        ═══════════════════════════════════════════ */
+        function buildSankeyDrill(categoryName) {
+            const svgEl = $('sankey-svg');
+            const svg = d3.select(svgEl);
+            svg.selectAll('*').remove();
+
+            // Filter expenses for this category only
+            const catExpenses = expenses.filter(e => e.cat === categoryName);
+            if (!catExpenses.length) return;
+
+            const W = svgEl.parentElement.clientWidth || 880;
+
+            /* ── Group expenses by merchant ──
+               Heuristic: take the first 20 chars of the description, normalized.
+               Combines multiple "Starbucks #1234" into one "Starbucks" node. */
+            function normalizeMerchant(desc) {
+                // Strip leading dates, transaction codes, store numbers
+                let m = desc
+                    .replace(/^\d+\s+/, '')                       // leading digits
+                    .replace(/#\d+/g, '')                          // store numbers like #1234
+                    .replace(/\b\d{4,}\b/g, '')                    // long digit runs
+                    .replace(/\s+(LLC|INC|CO|CORP)\b\.?/gi, '')   // entity suffixes
+                    .replace(/\s+/g, ' ')
+                    .trim();
+                // Take first 3 words or 24 chars, whichever shorter
+                const words = m.split(' ').slice(0, 3).join(' ');
+                return words.slice(0, 24).trim() || desc.slice(0, 20);
+            }
+
+            const merchantMap = {};  // merchant name → { value, count }
+            catExpenses.forEach(e => {
+                const key = normalizeMerchant(e.name).toLowerCase();
+                const display = normalizeMerchant(e.name);
+                if (!merchantMap[key]) merchantMap[key] = { label: display, value: 0, count: 0 };
+                merchantMap[key].value += e.amount;
+                merchantMap[key].count++;
+            });
+
+            // Build 4-stage Sankey: Bank → CC → Category → Merchant
+            const catColor = CAT_COLORS[categoryName] || '#888780';
+            const T = [{}, {}, {}, {}];   // banks, ccs, cat, merchants
+            const L01 = {}, L02 = {}, L12 = {}, L23 = {};
+
+            const bump = (obj, k, label, color, v) => {
+                if (!obj[k]) obj[k] = { key: k, label, color, value: 0 };
+                obj[k].value += v;
+            };
+            const agg = (obj, k, v) => { obj[k] = (obj[k] || 0) + v; };
+
+            // The single category node
+            const catKey = 'cat|' + categoryName;
+            const totalCat = catExpenses.reduce((s, e) => s + e.amount, 0);
+            T[2][catKey] = { key: catKey, label: categoryName, color: catColor, value: totalCat };
+
+            catExpenses.forEach(e => {
+                const merchantKeyRaw = normalizeMerchant(e.name).toLowerCase();
+                const merchantNodeKey = 'mer|' + merchantKeyRaw;
+                const merchant = merchantMap[merchantKeyRaw];
+                if (!T[3][merchantNodeKey]) {
+                    const label = merchant.count > 1
+                        ? `${merchant.label} (${merchant.count}\u00d7)`
+                        : merchant.label;
+                    T[3][merchantNodeKey] = { key: merchantNodeKey, label, color: catColor, value: merchant.value };
+                }
+                agg(L23, catKey + '\u00a7' + merchantNodeKey, e.amount);
+
+                const type = accountType(e.accountId);
+                if (type === 'bank') {
+                    const b = bankAccounts.find(a => a.id === e.accountId);
+                    if (!b) return;
+                    bump(T[0], 'bnk|' + b.id, b.name + (b.last4 ? ' \u2022\u2022' + b.last4 : ''), COLOR_BANK, e.amount);
+                    agg(L02, 'bnk|' + b.id + '\u00a7' + catKey, e.amount);
+                }
+                if (type === 'cc') {
+                    const c = creditCards.find(x => x.id === e.accountId);
+                    const b = c && bankAccounts.find(a => a.id === c.bankId);
+                    if (!c || !b) return;
+                    bump(T[0], 'bnk|' + b.id, b.name + (b.last4 ? ' \u2022\u2022' + b.last4 : ''), COLOR_BANK, e.amount);
+                    bump(T[1], 'cc|' + c.id, c.name + (c.last4 ? ' \u2022\u2022' + c.last4 : ''), COLOR_CC, e.amount);
+                    agg(L01, 'bnk|' + b.id + '\u00a7cc|' + c.id, e.amount);
+                    agg(L12, 'cc|' + c.id + '\u00a7' + catKey, e.amount);
+                }
+            });
+
+            const NW = 14, VPAD = 8, HDR_H = 22;
+            const ML = 46, MR = 260, MT = HDR_H + 10, MB = 16;
+            const innerW = W - ML - MR;
+            const TIER_NAMES = ['BANK ACCOUNT', 'CREDIT CARD', 'CATEGORY', 'MERCHANT'];
+            const COL_X = [ML, ML + innerW / 3, ML + 2 * innerW / 3, ML + innerW];
+
+            const nodeByKey = {};
+            const maxInAnyCol = Math.max(...T.map(t => Object.keys(t).length), 1);
+            const H = Math.min(680, Math.max(360, maxInAnyCol * 38 + (maxInAnyCol - 1) * VPAD + MT + MB));
+            const innerH = H - MT - MB;
+
+            let scale = Infinity;
+            T.forEach(tier => {
+                const nodes = Object.values(tier);
+                if (!nodes.length) return;
+                const totalV = nodes.reduce((s, n) => s + n.value, 0);
+                if (totalV > 0) scale = Math.min(scale, (innerH - (nodes.length - 1) * VPAD) / totalV);
+            });
+            if (!isFinite(scale) || scale <= 0) scale = 1;
+
+            function placeTier(nodes, ci) {
+                const totalH = nodes.reduce((s, n) => s + Math.max(6, n.value * scale), 0)
+                    + (nodes.length - 1) * VPAD;
+                let y = MT + (innerH - totalH) / 2;
+                nodes.forEach(n => {
+                    const nh = Math.max(6, n.value * scale);
+                    n.x0 = COL_X[ci]; n.x1 = n.x0 + NW;
+                    n.y0 = y; n.y1 = y + nh;
+                    nodeByKey[n.key] = n;
+                    y += nh + VPAD;
+                });
+            }
+
+            placeTier(Object.values(T[0]).sort((a, b) => b.value - a.value), 0);
+            placeTier(Object.values(T[1]).sort((a, b) => b.value - a.value), 1);
+            placeTier(Object.values(T[2]), 2);
+            // Merchants: sorted largest first
+            placeTier(Object.values(T[3]).sort((a, b) => b.value - a.value), 3);
+
+            /* Build link ribbons — two-pass crossing-free */
+            const allLinks = [];
+            Object.entries(L01).forEach(([k, v]) => { const [sk, tk] = k.split('\u00a7'); allLinks.push({ sk, tk, value: v }); });
+            Object.entries(L02).forEach(([k, v]) => { const [sk, tk] = k.split('\u00a7'); allLinks.push({ sk, tk, value: v }); });
+            Object.entries(L12).forEach(([k, v]) => { const [sk, tk] = k.split('\u00a7'); allLinks.push({ sk, tk, value: v }); });
+            Object.entries(L23).forEach(([k, v]) => { const [sk, tk] = k.split('\u00a7'); allLinks.push({ sk, tk, value: v }); });
+
+            const bySource = {}, byTarget = {};
+            allLinks.forEach(l => {
+                (bySource[l.sk] = bySource[l.sk] || []).push(l);
+                (byTarget[l.tk] = byTarget[l.tk] || []).push(l);
+            });
+            const midYof = key => { const n = nodeByKey[key]; return n ? (n.y0 + n.y1) / 2 : 0; };
+            const srcCur = {}, tgtCur = {};
+            Object.values(nodeByKey).forEach(n => { srcCur[n.key] = 0; tgtCur[n.key] = 0; });
+            Object.entries(bySource).forEach(([sk, links]) => {
+                const sn = nodeByKey[sk]; if (!sn) return;
+                links.sort((a, b) => midYof(a.tk) - midYof(b.tk));
+                links.forEach(l => {
+                    const lhs = sn.value > 0 ? (l.value / sn.value) * (sn.y1 - sn.y0) : 0;
+                    l.sy0 = sn.y0 + srcCur[sk]; l.sy1 = l.sy0 + lhs; srcCur[sk] += lhs;
+                });
+            });
+            Object.entries(byTarget).forEach(([tk, links]) => {
+                const tn = nodeByKey[tk]; if (!tn) return;
+                links.sort((a, b) => midYof(a.sk) - midYof(b.sk));
+                links.forEach(l => {
+                    const lht = tn.value > 0 ? (l.value / tn.value) * (tn.y1 - tn.y0) : 0;
+                    l.ty0 = tn.y0 + tgtCur[tk]; l.ty1 = l.ty0 + lht; tgtCur[tk] += lht;
+                });
+            });
+
+            const ribbons = allLinks
+                .filter(l => l.value > 0 && nodeByKey[l.sk] && nodeByKey[l.tk])
+                .map(l => ({
+                    sx1: nodeByKey[l.sk].x1, sy0: l.sy0, sy1: l.sy1,
+                    tx0: nodeByKey[l.tk].x0, ty0: l.ty0, ty1: l.ty1,
+                    color: nodeByKey[l.sk].color,
+                    tip: `${nodeByKey[l.sk].label} \u2192 ${nodeByKey[l.tk].label}: $${l.value.toFixed(2)}`
+                }));
+
+            svgEl.setAttribute('height', H);
+            svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const textFill = isDark ? '#e8e8e2' : '#1a1a18';
+            const subFill = isDark ? '#7a7a74' : '#6b6a65';
+            const tip = $('sk-tip');
+            const showTip = (ev, msg) => {
+                tip.textContent = msg; tip.style.opacity = 1;
+                tip.style.left = (ev.clientX + 14) + 'px';
+                tip.style.top = (ev.clientY - 34) + 'px';
+            };
+            const hideTip = () => { tip.style.opacity = 0; };
+
+            TIER_NAMES.forEach((name, i) => {
+                svg.append('text')
+                    .attr('x', COL_X[i] + NW / 2).attr('y', 13)
+                    .attr('text-anchor', 'middle').attr('font-size', 9)
+                    .attr('font-weight', '700').attr('fill', subFill)
+                    .attr('font-family', 'system-ui,sans-serif').text(name);
+            });
+
+            ribbons.forEach(r => {
+                const mx = (r.sx1 + r.tx0) / 2;
+                const d =
+                    `M${r.sx1},${r.sy0}C${mx},${r.sy0} ${mx},${r.ty0} ${r.tx0},${r.ty0}` +
+                    `L${r.tx0},${r.ty1}C${mx},${r.ty1} ${mx},${r.sy1} ${r.sx1},${r.sy1}Z`;
+                svg.append('path').attr('d', d).attr('fill', r.color).attr('opacity', 0.3)
+                    .on('mousemove', ev => showTip(ev, r.tip)).on('mouseleave', hideTip);
+            });
+
+            Object.values(nodeByKey).forEach(n => {
+                svg.append('rect')
+                    .attr('x', n.x0).attr('y', n.y0).attr('width', NW)
+                    .attr('height', Math.max(4, n.y1 - n.y0)).attr('fill', n.color).attr('rx', 3)
+                    .on('mousemove', ev => showTip(ev, `${n.label}: $${n.value.toFixed(2)}`))
+                    .on('mouseleave', hideTip);
+
+                const midY = (n.y0 + n.y1) / 2;
+                const xText = n.x1 + 6;
+                const nodeH = n.y1 - n.y0;
+                const useStacked = nodeH >= 28;
+
+                if (useStacked) {
+                    svg.append('text')
+                        .attr('x', xText).attr('y', midY - 8).attr('dy', '0.35em')
+                        .attr('text-anchor', 'start').attr('font-size', 12).attr('font-weight', '600')
+                        .attr('fill', textFill).attr('font-family', 'system-ui,sans-serif').text(n.label);
+                    svg.append('text')
+                        .attr('x', xText).attr('y', midY + 8).attr('dy', '0.35em')
+                        .attr('text-anchor', 'start').attr('font-size', 10)
+                        .attr('fill', subFill).attr('font-family', 'system-ui,sans-serif')
+                        .text('$' + n.value.toFixed(2));
+                } else {
+                    const g = svg.append('text')
+                        .attr('x', xText).attr('y', midY).attr('dy', '0.35em')
+                        .attr('text-anchor', 'start').attr('font-size', 12).attr('font-weight', '600')
+                        .attr('font-family', 'system-ui,sans-serif');
+                    g.append('tspan').attr('fill', textFill).text(n.label);
+                    g.append('tspan').attr('fill', subFill).attr('font-weight', '400').attr('font-size', 11)
+                        .text('  $' + n.value.toFixed(2));
+                }
+            });
+        }
+
+        // Wire the back button
+        $('sankey-back-btn').addEventListener('click', () => {
+            $('sk-tip').style.opacity = 0;   // dismiss any lingering tooltip
+            sankeyDrillCat = null;
+            buildSankey();
+        });
+        // Hover effect on back button
+        $('sankey-back-btn').addEventListener('mouseenter', e => {
+            e.target.style.background = 'var(--bg-surface)';
+            e.target.style.color = 'var(--text-primary)';
+        });
+        $('sankey-back-btn').addEventListener('mouseleave', e => {
+            e.target.style.background = 'none';
+            e.target.style.color = 'var(--text-secondary)';
+        });
+
         /* ════════════════════════════════════════════
            Expense log
         ═══════════════════════════════════════════ */
@@ -2521,12 +2862,18 @@
             $('sankey-wrap').style.display = has ? 'block' : 'none';
 
             if (has) {
+                // Auto-exit drill-down if the focused category no longer has expenses
+                if (sankeyDrillCat && !expenses.some(e => e.cat === sankeyDrillCat)) {
+                    sankeyDrillCat = null;
+                }
                 buildDonut(getCatTotals()); renderLegend(getCatTotals()); buildBar(getCatTotals()); buildSankey();
             } else {
                 if (donutChart) { donutChart.destroy(); donutChart = null; }
                 if (barChart) { barChart.destroy(); barChart = null; }
                 $('legend').innerHTML = '';
                 d3.select('#sankey-svg').selectAll('*').remove();
+                sankeyDrillCat = null;
+                updateSankeyHeader();
             }
             renderList();
         }
@@ -2601,6 +2948,7 @@
         /* ── Keyword → Category dictionary ── */
         const KEYWORD_MAP = [
             { cat: 'Housing & Utilities', words: ['mortgage','rent payment','hoa','lease','electric','electricity','gas company','utility','utilities','water bill','internet','comcast','xfinity','verizon fios','at&t internet','spectrum','cox comm','pseg','pge','conedison','con ed','duke energy','national grid','direct energy'] },
+            { cat: 'Household Essentials & Supplies', words: ['paper towel','toilet paper','tissue','laundry detergent','laundry','tide','bounty','clorox','lysol','dish soap','dishwasher','cleaning','household','swiffer','bleach','sponge','trash bag','garbage bag','ziploc','glad','saran','aluminum foil','light bulb','batteries','duracell','energizer','furniture','mattress','bed bath','bed bath & beyond','ikea','home goods','homegoods','at home','container store','dollar tree','dollar general','family dollar','five below'] },
             { cat: 'Food & Dining', words: ['wholefds','whole foods','trader joe','instacart','kroger','safeway','publix','wegmans','aldi','costco food','doordash','grubhub','uber eats','ubereats','postmates','seamless','chipotle','mcdonald','burger king','wendy','taco bell','chick-fil','subway','domino','pizza hut','panera','starbucks','dunkin','dunkin donuts','coffee','restaurant','dining','diner','bistro','cafe','sushi','ramen','tacos','grill','kitchen','eatery','deli','bakery','pret a manger','cheesecake factory','olive garden','applebee','ihop','waffle house'] },
             { cat: 'Transportation', words: ['uber','lyft','taxi','shell','exxon','bp gas','chevron','mobil','sunoco','arco','speedway','wawa gas','racetrac','kwik trip','casey','circle k gas','gas station','fuel','toll','ezpass','e-zpass','fastrak','metro card','metrocard','mbta','bart','mta','transit','amtrak','greyhound','hertz','enterprise rent','avis','budget car','zipcar','parking','park mobile','parkmobile','auto repair','jiffy lube','midas','firestone','goodyear','car wash','dmv','vehicle','auto insurance','geico','progressive','state farm auto'] },
             { cat: "Childcare & Kids' Expenses", words: ['daycare','day care','childcare','preschool','kindergarten','tuition','school fee','after school','babysit','nanny','learning','montessori','bright horizons','kinder care','la petite','children','pediatric','toys r us','gymboree',"children's place",'carter','old navy kids','gap kids'] },
