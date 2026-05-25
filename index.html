@@ -1117,6 +1117,35 @@
 
         .pdf-btn i { font-size: 16px; }
 
+        /* ── Mobile-responsive header buttons ──
+           On narrow screens, hide text labels and shrink action buttons
+           to icon-only so they all fit on one line without horizontal scroll. */
+        @media (max-width: 640px) {
+            header h1 { font-size: 22px !important; }
+            header p { font-size: 12px !important; }
+
+            .header-actions .btn-label { display: none; }
+
+            .info-btn {
+                padding: 0 !important;
+                width: 40px !important;
+                justify-content: center !important;
+            }
+            .info-btn i { margin: 0; }
+
+            #import-btn {
+                padding: 0 !important;
+                width: 40px !important;
+                justify-content: center !important;
+            }
+            #import-btn i { margin: 0; }
+        }
+
+        /* Very small screens — let buttons wrap to a new line if needed */
+        @media (max-width: 360px) {
+            .header-actions { width: 100%; justify-content: flex-end; }
+        }
+
         /* ══════════════════════════════════════
            IMPORT STATEMENT MODAL
         ══════════════════════════════════════ */
@@ -1388,8 +1417,8 @@
     <div class="container">
 
         <header
-            style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:2rem;">
-            <div style="display:flex; align-items:center; gap:14px;">
+            style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:2rem; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:14px; flex:1; min-width:0;">
                 <svg width="44" height="44" viewBox="0 0 50 44"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-label="Expense flow icon" style="flex-shrink:0; display:block;">
@@ -1510,15 +1539,17 @@
                         category.</p>
                 </div>
             </div>
-            <button class="info-btn" id="info-btn" style="flex-shrink:0; margin-top:4px;">
-                <i class="ti ti-info-circle" aria-hidden="true"></i> How to use
-            </button>
-            <button class="pdf-btn" id="pdf-btn" style="flex-shrink:0; margin-top:4px; width:40px; padding:0; justify-content:center;" title="Download as PDF" aria-label="Download as PDF">
-                <i class="ti ti-download" aria-hidden="true"></i>
-            </button>
-            <button class="pdf-btn" id="import-btn" style="flex-shrink:0; margin-top:4px;" title="Import statement">
-                <i class="ti ti-file-import" aria-hidden="true"></i> Import Statement
-            </button>
+            <div class="header-actions" style="display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; margin-top:4px;">
+                <button class="info-btn" id="info-btn" title="How to use" aria-label="How to use">
+                    <i class="ti ti-info-circle" aria-hidden="true"></i> <span class="btn-label">How to use</span>
+                </button>
+                <button class="pdf-btn" id="pdf-btn" style="width:40px; padding:0; justify-content:center;" title="Download as PDF" aria-label="Download as PDF">
+                    <i class="ti ti-download" aria-hidden="true"></i>
+                </button>
+                <button class="pdf-btn" id="import-btn" title="Import statement" aria-label="Import statement">
+                    <i class="ti ti-file-import" aria-hidden="true"></i> <span class="btn-label">Import Statement</span>
+                </button>
+            </div>
         </header>
 
         <!-- Print-only header: shown only when printing/saving as PDF -->
