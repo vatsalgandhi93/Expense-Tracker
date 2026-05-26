@@ -1785,6 +1785,10 @@
                         <h3>Review transactions</h3>
                         <span class="review-stats" id="review-stats"></span>
                     </div>
+                    <p style="font-size:11px; color:var(--text-secondary); margin:-4px 0 8px; display:flex; align-items:center; gap:5px;">
+                        <i class="ti ti-pencil" style="font-size:13px;color:#378ADD;"></i>
+                        Click any description to rename it before importing.
+                    </p>
                     <div class="review-table-wrap">
                         <table class="rtable" id="review-table">
                             <thead>
@@ -3366,17 +3370,37 @@
             const cats = Object.keys(CAT_COLORS);
 
             parsedTxns.forEach((tx, i) => {
+                // Preserve original description for tooltip / reset capability
+                if (tx.originalDescription === undefined) tx.originalDescription = tx.description;
+
                 const tr = document.createElement('tr');
                 tr.className = tx.include ? '' : 'excluded';
                 const credBadge = tx.type === 'credit'
                     ? '<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(29,158,117,.15);color:#1D9E75;margin-left:5px;">CREDIT</span>'
                     : '';
+
+                const isEdited = tx.description !== tx.originalDescription;
+                const editedBadge = isEdited
+                    ? '<i class="ti ti-pencil" style="font-size:11px;color:#378ADD;margin-left:4px;vertical-align:-1px;" title="Renamed"></i>'
+                    : '';
+
                 tr.innerHTML = `
                     <td class="td-check">
                         <input type="checkbox" data-idx="${i}" ${tx.include ? 'checked' : ''}/>
                     </td>
                     <td style="white-space:nowrap; color:var(--text-secondary);">${tx.date}</td>
-                    <td title="${tx.description}" style="max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${tx.description}${credBadge}</td>
+                    <td style="max-width:220px;">
+                        <input type="text" class="desc-input" data-idx="${i}"
+                            value="${tx.description.replace(/"/g, '&quot;')}"
+                            title="Original: ${tx.originalDescription.replace(/"/g, '&quot;')} — click to rename"
+                            style="width:100%; height:28px; padding:0 6px; font-size:13px;
+                            border:0.5px solid transparent; border-radius:4px;
+                            background:transparent; color:var(--text-primary);
+                            font-family:var(--font-sans); outline:none;
+                            transition:border-color .15s, background .15s;
+                            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"/>
+                        ${credBadge}${editedBadge}
+                    </td>
                     <td>
                         <select class="cat-sel" data-idx="${i}">
                             ${cats.map(c => `<option value="${c}" ${c === tx.category ? 'selected' : ''}>${c}</option>`).join('')}
@@ -3387,6 +3411,7 @@
                 reviewTbody.appendChild(tr);
             });
 
+            // Checkboxes
             reviewTbody.querySelectorAll('input[type=checkbox]').forEach(cb => {
                 cb.addEventListener('change', () => {
                     const idx = parseInt(cb.dataset.idx);
@@ -3395,11 +3420,53 @@
                     refreshConfirmBtn();
                 });
             });
+
+            // Category selects
             reviewTbody.querySelectorAll('select.cat-sel').forEach(sel => {
                 sel.addEventListener('change', () => {
                     parsedTxns[parseInt(sel.dataset.idx)].category = sel.value;
                 });
             });
+
+            // Description inputs — inline rename
+            reviewTbody.querySelectorAll('input.desc-input').forEach(inp => {
+                // Show editable border on focus/hover
+                inp.addEventListener('mouseenter', () => {
+                    if (document.activeElement !== inp) inp.style.background = 'var(--bg-surface)';
+                });
+                inp.addEventListener('mouseleave', () => {
+                    if (document.activeElement !== inp) inp.style.background = 'transparent';
+                });
+                inp.addEventListener('focus', () => {
+                    inp.style.borderColor = '#378ADD';
+                    inp.style.background = 'var(--bg-card)';
+                    inp.style.boxShadow = '0 0 0 3px rgba(55,138,221,.12)';
+                    inp.select();
+                });
+                inp.addEventListener('blur', () => {
+                    inp.style.borderColor = 'transparent';
+                    inp.style.background = 'transparent';
+                    inp.style.boxShadow = 'none';
+                    const idx = parseInt(inp.dataset.idx);
+                    const newVal = inp.value.trim();
+                    if (newVal && newVal !== parsedTxns[idx].description) {
+                        parsedTxns[idx].description = newVal;
+                        // Re-render this row so the edited pencil icon updates
+                        renderReviewTable();
+                    } else if (!newVal) {
+                        // Empty — revert to original
+                        inp.value = parsedTxns[idx].description;
+                    }
+                });
+                inp.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') { e.preventDefault(); inp.blur(); }
+                    if (e.key === 'Escape') {
+                        inp.value = parsedTxns[parseInt(inp.dataset.idx)].description;
+                        inp.blur();
+                    }
+                });
+            });
+
             refreshConfirmBtn();
         }
 
