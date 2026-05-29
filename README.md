@@ -177,6 +177,22 @@ Expense-Tracker/
 
 ---
 
+## 🎬 See It in Action
+
+### 📤 Importing a Statement + Renaming Transactions
+> Watch how a PDF statement gets parsed, auto-categorised, and how you can rename any cryptic merchant description before importing.
+
+[https://github.com/vatsalgandhi93/Expense-Tracker/raw/main/Import_Statement.mov](https://github.com/user-attachments/assets/31340fe9-97d3-46d2-a2a0-8a32a9902877)
+
+---
+
+### 🔍 Sankey Drill-Down — From Categories to Merchants
+> Click any category in the Sankey diagram to expand it into a per-merchant breakdown. Smart grouping combines repeat visits (e.g. "Starbucks 5×").
+
+[https://github.com/vatsalgandhi93/Expense-Tracker/raw/main/Sankey_Diagram_Drill_Down.mov](https://github-production-user-asset-6210df.s3.amazonaws.com/46898660/600303855-7717127f-30ef-4084-b91a-c21766b9a783.mov?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20260529%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260529T194718Z&X-Amz-Expires=300&X-Amz-Signature=a7c9e774e8fd5ad320a79bd9b058624d1647df1590bace9afaeec85e07ad1c7f&X-Amz-SignedHeaders=host&response-content-type=video%2Fquicktime)
+
+---
+
 ## 📸 Screenshots
 
 | 🎯 Dashboard Overview | 🌊 Sankey Flow Diagram |
