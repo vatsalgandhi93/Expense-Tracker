@@ -94,38 +94,41 @@
         /* ── Brand header bar (always dark, EigenZ signature) ── */
         .site-header {
             background: #231B18;
-            padding: 0 24px;
+            padding: 0 48px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 72px;
+            height: 88px;
             margin-bottom: 1.5rem;
+            flex-shrink: 0;
         }
         .site-header .brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 18px;
         }
         .site-header .brand-mark {
-            width: 36px; height: 36px;
+            width: 44px; height: 44px;
             display: block;
             object-fit: contain;
             flex-shrink: 0;
         }
-        .site-header .brand-text { line-height: 1.2; }
+        .site-header .brand-text { line-height: 1.25; }
         .site-header .brand-name {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 600;
             color: #FFFFFF;
             letter-spacing: -.01em;
+            white-space: nowrap;
         }
         .site-header .brand-name b { color: var(--c-gold); font-weight: 600; }
         .site-header .brand-by {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 500;
             color: rgba(255,255,255,.65);
-            letter-spacing: .08em;
+            letter-spacing: .05em;
             text-transform: uppercase;
+            margin-top: 2px;
         }
         .hdr-right {
             display: flex; align-items: center; gap: 8px;
@@ -1277,24 +1280,25 @@
            On narrow screens, hide text labels and shrink action buttons
            to icon-only so they all fit on one line without horizontal scroll. */
         @media (max-width: 640px) {
+            .site-header { padding: 0 20px; height: 72px; }
+            .site-header .brand-mark { width: 36px; height: 36px; }
+            .site-header .brand-name { font-size: 16px; }
+            .site-header .brand-by { font-size: 10px; }
+            .site-header .brand { gap: 12px; }
+
             header h1 { font-size: 22px !important; }
             header p { font-size: 12px !important; }
 
-            .header-actions .btn-label { display: none; }
+            .hdr-btn .btn-label,
+            #import-btn .btn-label,
+            #info-btn .btn-label { display: none; }
 
-            .info-btn {
+            #info-btn, #import-btn {
                 padding: 0 !important;
-                width: 40px !important;
+                width: 32px !important;
                 justify-content: center !important;
             }
-            .info-btn i { margin: 0; }
-
-            #import-btn {
-                padding: 0 !important;
-                width: 40px !important;
-                justify-content: center !important;
-            }
-            #import-btn i { margin: 0; }
+            #info-btn i, #import-btn i { margin: 0; font-size: 18px; }
         }
 
         /* Very small screens — let buttons wrap to a new line if needed */
